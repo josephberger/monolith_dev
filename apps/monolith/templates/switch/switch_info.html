@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Switch Info</h1>
+<form action="" method="post" novalidate>
+
+
+    {% if info is not none %}
+
+    {% if history is not none %}
+    History:
+    <select name="history_date" method="GET" action="/">
+        {% for h in history %}
+        <option value="{{h}}">{{h}}</option>
+        "
+        {% endfor %}
+    </select>
+
+    {{ form.history_go(class_="button") }}
+    {% endif %}
+
+    <table id="report" class="table-sort table-sort-search">
+        <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>IP</th>
+            <th>Device Type</th>
+            <th>Options</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>{{ info.info.hostname }}</td>
+            <td>{{ info.info.ip }}</td>
+            <td>{{ info.info.device_type }}</td>
+            <td>{{ form.refresh_device(class_="button") }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+
+    {% if history is not none %}
+
+    <select name="first_record" method="GET" action="/">
+        {% for h in history %}
+        <option value="{{h}}">{{h}}</option>
+        "
+        {% endfor %}
+    </select>
+    <select name="second_record" method="GET" action="/">
+        {% for h in history %}
+        <option value="{{h}}">{{h}}</option>
+        "
+        {% endfor %}
+    </select>
+
+    {{ form.compare(class_="button") }}
+
+    <br><br>
+    {% endif %}
+
+    {% if device_type is not none %}
+    {{ form.interfacestatus(class_="button") }} {{ form.inventory(class_="button") }} {{ form.version(class_="button")
+    }} {{ form.show_mac_addr_table(class_="button") }} {{ form.show_environment(class_="button") }} |
+
+        {% if info.vrfs|length > 0 %}
+            {{ form.vrf_interface_report(class_="button") }}
+            <select name="vrf" method="GET" action="/">
+                {% for v in info.vrfs %}
+                <option value="{{v}}">{{v}}</option>
+                "
+                {% endfor %}
+                <option value="all_vrfs">all_vrfs</option>
+            </select>
+
+            {{ form.vrf_arp_table(class_="button") }}
+            <select name="arp_vrf" method="GET" action="/">
+            {% if info.vrfs|length > 0 %}
+                {% for v in info.vrfs %}
+                <option value="{{v}}">{{v}}</option>
+                "
+                {% endfor %}
+            {% endif %}
+                <option value="all_vrfs">default</option>
+
+            </select>
+        {% endif %}
+
+    {% endif %}
+
+
+    <br>
+    <br>
+
+    {% else %}
+    {%endif %}
+    {% if info.interfaces|length > 0 %}
+    <button type="button" class="collapsible">Interfaces</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mode</th>
+                <th>Description</th>
+                <th>IP Addresses</th>
+                {% if include_config is not none %}
+                <th>Config</th>
+                {%endif %}
+                <th>Options</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for interface in info.interfaces %}
+            <tr>
+                <td>{{ interface }}</td>
+                <td>{{ info.interfaces[interface].mode }}</td>
+                <td>{{ info.interfaces[interface].description }}</td>
+                {% if 'addresses' in info.interfaces[interface] %}
+                <td>
+                    {% for key, value in info.interfaces[interface].addresses.items() %}
+                    {{key}} : {{value}} <br>
+                    {% endfor %}
+                </td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                {% if include_config is not none %}
+                <td>{% for c in info.interfaces[interface].config %}
+                    {{ c }}<br>
+                    {% endfor %}
+                </td>
+                {% else %}
+                {%endif %}
+                <td>
+                    <button name="show_interface" value={{ interface }} type="submit" class="action_button">Show
+                    </button>
+                    <button name="show_int_mac_table" value={{ interface }} type="submit" class="action_button">Show MAC
+                        Table
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+    {% if info.vlans|length > 0 %}
+    <button type="button" class="collapsible">Vlans</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>Number</th>
+                <th>Name</th>
+                <th>Options</th>
+            </thead>
+            <tbody>
+            {% for vlan in info.vlans %}
+            <tr>
+                <td><a href={{ root_uri }}vlan_info?vlan={{ vlan }}>{{ vlan }}</a></td>
+                <td>{{ info.vlans[vlan].name }}</td>
+                <td>
+                    <button name="show_stp" value={{ vlan }} type="submit" class="action_button">Show STP</button>
+
+                    <button name="show_mac_table" value={{ vlan }} type="submit" class="action_button">Show MAC Table
+                    </button>
+
+                </td>
+                {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+    {% if info.neighbors|length > 0 %}
+    <button type="button" class="collapsible">Neighbors</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>Local Port</th>
+                <th>Neighbor Device</th>
+                <th>Neighbor Port</th>
+            </thead>
+            <tbody>
+            {% for neighbor in info.neighbors %}
+            <tr>
+                <td>{{ neighbor }}</td>
+                <td><a href={{ root_uri }}switch_info?hostname="{{ info.neighbors[neighbor].neighbor_device}}">{{
+                    info.neighbors[neighbor].neighbor_device }}</a></td>
+                <td>{{ info.neighbors[neighbor].neighbor_port }}</td>
+                {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+    {% if info.vrfs|length > 0 %}
+    <button type="button" class="collapsible">VRFs</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for vrf in info.vrfs %}
+            <tr>
+                <td>{{ vrf }}</td>
+                <td>
+                    <button name="show_ip_vrf" value={{ vrf }} type="submit" class="action_button">Show IP Route
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+    {% if info.equipment|length > 0 %}
+    <button type="button" class="collapsible">Equipment</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>PID</th>
+                <th>Serial Number</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equip in info.equipment %}
+            <tr>
+                <td>{{ equip }}</td>
+                <td>{{ info.equipment[equip].pid }}</td>
+                <td>{{ info.equipment[equip].sn }}</td>
+                <td>{{ info.equipment[equip].description }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+</form>
+<script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+
+</script>
+
+{% endblock %}

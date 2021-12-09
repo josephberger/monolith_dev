@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Vlan Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through the available vlan data.</p>
+            <p>Examples: "vlan_name", *partofname*, number:25, name AND name-other1 AND NOT 999</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+
+    {% if hits is not none %}
+        <hr style="width75%">
+        {{ form.export(class_="button") }}
+        <table>
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>Number</th>
+                        <th>Name</th>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td><a href={{ root_uri }}vlan_info?vlan={{ h.number}}>{{ h.number }}</a></td>
+                        <td>{{ h.name }}</td>
+                {% endfor %}
+        </table>
+
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

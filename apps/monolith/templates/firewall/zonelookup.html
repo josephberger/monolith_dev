@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Zone Lookup</h1>
+<form action="" method="post" novalidate>
+        {{ form.ip }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use single IP or subnet in CIDR format.  If you encounter an error just click back and try again.</p>
+            <p>Examples: "1.1.1.1", "10.0.0.0/24</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class="button") }}
+</form>
+
+{% endblock %}

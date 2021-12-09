@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Gateways</h1>
+    <form action="" method="post" novalidate>
+        <p>
+            {{ form.export(class_="button") }}
+        </p>
+
+    </form>
+    <table>
+        <tr>
+            <th>Gateway</th>
+            <th>Current Users</th>
+            <th>Last Updated</th>
+        </tr>
+    {% for gw in gateways %}
+        <tr>
+            {% if gw.users != "0" %}
+            <td><a href="{{ url_for('gateway_users', gw=gw.gateway)}}">
+                {{ gw.gateway }}
+            </a></td>
+            {% else %}
+            <td>
+                {{ gw.gateway }}
+            </td>
+            {%endif %}
+            <td>{{ gw.users }}</td>
+            <td>{{ gw.updated_at }}</td>
+        </tr>
+
+    {% endfor %}
+    </table>
+    <h1>Total: {{ total }}</h1>
+{% endblock %}

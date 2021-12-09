@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+
+    <h3>Firewall</h3>
+
+    <table style="width:50%">
+
+    <tr>
+
+        <th>Selection</th>
+        <th>Description</th>
+
+    </tr>
+
+        <tr>
+            <td><a href="{{ url_for('fw_search')}}">Firewalls</a></td>
+            <td>Lists the firewalls available (includes zone routes and interfaces).</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('zonelookup')}}">Zone Lookup</a></td>
+            <td>Displays the zone of an ip or subnet is found on a firewall.  Quick way to determine a zone.</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('audits')}}">Audits</a></td>
+            <td>Run an audit on a firewall policy (currently only the border firewall).</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('policy')}}">Policy</a></td>
+            <td>View and search the policies across the various firewalls.</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('object_search')}}">Objects</a></td>
+            <td>View and search the policies across the various firewalls.</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('policytest')}}">Policy Test</a></td>
+            <td>Test traffic against the firewalls (BETA).</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('route_search')}}">Routes</a></td>
+            <td>Search all routes across firewalls.</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('route_search')}}">Blackhole-IPs</a></td>
+            <td>Search the current blackhole ip database.</td>
+        </tr>
+
+        <tr>
+            <td><a href="{{ url_for('route_search')}}">Blackhole-Domains</a></td>
+            <td>Search the current blackhole domain database.</td>
+        </tr>
+
+    </table>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Device Info</h1>
+    <form action="" method="post" novalidate>
+
+    {% if history is not none %}
+        History:
+        <select name="history_date" method="GET" action="/">
+        {% for h in history %}
+            <option value= "{{h}}">{{h}}</option>"
+        {% endfor %}
+        </select>
+
+        {{ form.history_go(class_="button") }}
+    {% endif %}
+
+    <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>IP</th>
+                    <th>Device Type</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>{{ info.info.hostname }}</td>
+                    <td>{{ info.info.ip }}</td>
+                    <td>{{ info.info.device_type }}</td>
+                    <td>{{ form.refresh_device(class_="button") }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+    {% if history is not none %}
+
+        <select name="first_record" method="GET" action="/">
+        {% for h in history %}
+            <option value= "{{h}}">{{h}}</option>"
+        {% endfor %}
+        </select>
+                <select name="second_record" method="GET" action="/">
+        {% for h in history %}
+            <option value= "{{h}}">{{h}}</option>"
+        {% endfor %}
+        </select>
+
+        {{ form.compare() }}
+
+        <br><br>
+    {% endif %}
+
+    </form>
+
+{% endblock %}

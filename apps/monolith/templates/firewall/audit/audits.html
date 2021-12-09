@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Audits</h1>
+    <form action="" method="post" novalidate>
+        <h3>Generate Audit from
+        <a href="{{ url_for('generateaudit', id=id)}}">
+            CSV
+        </a>
+            |
+            API
+        </h3>
+    <br>
+    </form>
+
+
+    {% if csv_audits is not none %}
+    <h2>CSV Audits</h2>
+        <table style="width:50%">
+            <tr>
+            <th>Audit ID</th>
+            <th>Date Created</th>
+            <th>Type</th>
+            <th></th>
+            </tr>
+
+        {% for csv_audit in csv_audits %}
+
+            <tr>
+            <td><a href="{{ url_for('report', id=csv_audit._source.id)}}">
+            {{ csv_audit._source.id }}
+            </a></td>
+            <td>{{ csv_audit._source.created }}</td>
+            <td>{{ csv_audit._source.type }}</td>
+            <td><a href="{{ url_for('delete_audit', audit_id=csv_audit._source.id)}}">
+            DELETE
+            </a></td>
+            </tr>
+        {% endfor %}
+
+        </table>
+
+    {% else %}
+    {%endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+ {% extends "base.html" %}
+
+{% block content %}
+ <form action="" method="post" novalidate>
+    <h1>Report {{ id }} - rules with legacy naming.</h1>
+    <p>
+        {{ form.export() }}
+    </p>
+    <form action="" method="get" novalidate>
+    </form>
+        <table id="report">
+        <tr>
+            <th>Rule Index</th>
+            <th>Name</th>
+            <th>Suggested Name</th>
+        </tr>
+    {% for rule in rules %}
+            <tr>
+                <td>{{ rule.Rule_Index }}</td>
+                <td>{{ rule.Name }}</td>
+                <td>{{ rule.Suggested_name }}</td>
+            </tr>
+    {% endfor %}
+        </table>
+ </form>
+{% endblock %}

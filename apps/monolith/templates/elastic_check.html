@@ -1,0 +1,25 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form action="" method="post" novalidate>
+    {% if data is not none %}
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Cluster Name</th>
+                <th>Version Number</th>
+                <th>Build Date</th>
+                <th>Lucene Version</th>
+            </tr>
+        <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.cluster_name }}</td>
+            <td>{{ data.version.number }}</td>
+            <td>{{ data.version.build_date}}</td>
+            <td>{{ data.version.lucene_version }}</td>
+        </tr>
+        </table>
+    {% endif %}
+    </form>
+{% endblock %}

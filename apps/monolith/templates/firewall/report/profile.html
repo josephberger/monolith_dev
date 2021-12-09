@@ -1,0 +1,28 @@
+ {% extends "base.html" %}
+
+{% block content %}
+  <form action="" method="post" novalidate>
+
+    <h1>Report {{ id }} - rules {{ param }} threat profile.</h1>
+    <p>
+        {{ form.export() }}
+    </p>
+
+        <table id="report">
+        <tr>
+            <th>Rule Index</th>
+            <th>Name</th>
+            <th>Profile</th>
+            <th>Created</th>
+        </tr>
+    {% for rule in rules %}
+            <tr>
+                <td>{{ rule.Rule_Index }}</td>
+                <td>{{ rule.Name }}</td>
+                <td>{{ rule.Profile }}</td>
+                <td>{{ rule.Created }}</td>
+            </tr>
+    {% endfor %}
+        </table>
+   </form>
+{% endblock %}

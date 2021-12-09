@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% if device_query %}
+        {% if device_query.data|length > 0 %}
+
+        <hr style="width75%">
+        <div class="center-body-card">
+            <div class="table-information">{{ device_query.data|length }} Search Results</div>
+            <div class="button-container">
+                <button class="select" title="Export CSV" type="submit" name="export_csv" value="{{key}}">
+                     <img src="static/download.png" style="width:30px;height:30px;">
+                </button>
+            </div>
+            {% set data = device_query.data %}
+            {% include "endpoint_search/endpoint_search_card.html" %}
+        </div>
+        {%endif %}
+    {%endif %}
+{% endblock %}

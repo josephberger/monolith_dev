@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Generate Audit</h1>
+<form action="" method="post" novalidate>
+    <p>
+        {{ form.rsa }}
+        {{ form.rsa.label }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+
+    <h3>Firewalls</h3>
+
+    <table style="width:50%">
+
+    <tr>
+
+        <th>Name</th>
+
+    </tr>
+
+        {% if hits is not none %}
+            {% for fw in firewalls %}
+            <tr>
+                <td><a href={{ root_uri }}fw_info?firewall="{{ fw }}">{{ fw }}</a></td>
+            </tr>
+            {% endfor %}
+        {%endif %}
+
+
+
+    </table>
+
+</form>
+
+{% endblock %}

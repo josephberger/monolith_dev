@@ -1,0 +1,66 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+        <p>
+            {{ form.export(class_="button") }}
+        </p>
+
+        <b>Global Protect Logs</b>
+        <table>
+            <tr>
+                <th>Time Generated</th>
+                <th>Source User</th>
+                <th>Portal/Gateway</th>
+                <th>Event ID</th>
+                <th>Status</th>
+                <th>Stage</th>
+                <th>Auth Method</th>
+                <th>Description</th>
+                <th>Public IP</th>
+                <th>Private IP</th>
+                <th>Public IPv6</th>
+                <th>Private IPv6</th>
+            </tr>
+        {% for log in gp_logs %}
+            <tr>
+                <td>{{ log.time_generated }}</td>
+                <td>{{ log.srcuser }}</td>
+                <td>{{ log.portal }}</td>
+                <td>{{ log.eventid }}</td>
+                <td>{{ log.status }}</td>
+                <td>{{ log.stage }}</td>
+                <td>{{ log.auth_method }}</td>
+                <td>{{ log.opaque }}</td>
+                <td>{{ log.public_ip }}</td>
+                <td>{{ log.private_ip }}</td>
+                <td>{{ log.public_ipv6 }}</td>
+                <td>{{ log.private_ipv6 }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        <br>
+        <b>System Logs</b>
+        <table id="report">
+            <tr>
+                <th>Time Generated</th>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>Event ID</th>
+                <th>Object</th>
+                <th>Description</th>
+            </tr>
+        {% for log in sys_logs %}
+            <tr>
+                <td>{{ log.time_generated }}</td>
+                <td>{{ log.type }}</td>
+                <td>{{ log.severity }}</td>
+                <td>{{ log.eventid }}</td>
+                <td>{{ log.object }}</td>
+                <td>{{ log.opaque }}</td>
+            </tr>
+    {% endfor %}
+
+        </table>
+    </form>
+{% endblock %}

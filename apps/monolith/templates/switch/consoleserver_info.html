@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Console Server Info</h1>
+    <form action="" method="post" novalidate>
+
+
+    {% if info is not none %}
+
+        {% if history is not none %}
+            History:
+            <select name="history_date" method="GET" action="/">
+            {% for h in history %}
+                <option value= "{{h}}">{{h}}</option>"
+            {% endfor %}
+            </select>
+
+            {{ form.history_go() }}
+        {% endif %}
+
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>IP</th>
+                        <th>Device Type</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ info.info.hostname }}</td>
+                        <td>{{ info.info.ip }}</td>
+                        <td>{{ info.info.device_type }}</td>
+                        <td>{{ form.refresh_device(class_="button") }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+
+        {% if history is not none %}
+
+            <select name="first_record" method="GET" action="/">
+            {% for h in history %}
+                <option value= "{{h}}">{{h}}</option>"
+            {% endfor %}
+            </select>
+                    <select name="second_record" method="GET" action="/">
+            {% for h in history %}
+                <option value= "{{h}}">{{h}}</option>"
+            {% endfor %}
+            </select>
+
+            {{ form.compare() }}
+
+            <br><br>
+        {% endif %}
+
+        <br>
+        <br>
+    {% else %}
+    {%endif %}
+    {% if info.interfaces|length > 0 %}
+        <button type="button" class="collapsible">Interfaces</button>
+        <div class="content">
+            <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mode</th>
+                        <th>Description</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for interface in info.interfaces %}
+                    <tr>
+                        <td>{{ interface }}</td>
+                        <td>{{ info.interfaces[interface].mode }}</td>
+                        <td>{{ info.interfaces[interface].description }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+    {%endif %}
+    </form>
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+       </script>
+
+{% endblock %}

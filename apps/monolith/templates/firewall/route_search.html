@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Route Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    {{ form.submit(class_="button") }}
+
+    {% if hits is not none %}
+        <hr style="width75%">
+        <br>
+        {{ hits|length }} search results.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Destination</th>
+                        <th>Zone</th>
+                        <th>Firewall</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td>{{ h.destination }}</td>
+                        <td>{{ h.zone }}</td>
+                        <td>{{ h.firewall }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+{% endblock %}

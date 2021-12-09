@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        {% for key in task_info %}
+            {% if task_info[key].data|length > 0 %}
+
+            <div class="center-body-card">
+                <button type="button" title="Expand Task List" class="collapsible">{{ task_info[key].data|length }} {{key}}</button>
+                <div class="content">
+                    <div class="button-container">
+                        <button class="select" title="Full Screen" type="submit" name="fullscreen" value="{{key}}">
+                            <img src="static/full_screen.png" style="width:30px;height:30px;">
+                        </button>
+                        <button class="select" title="Export CSV" type="submit" name="export_csv" value="{{key}}">
+                            <img src="static/download.png" style="width:30px;height:30px;">
+                        </button>
+                    </div>
+                    {% set table_data = task_info[key] %}
+                    {% include "tasks/task_card.html" %}
+                </div>
+            </div>
+
+            {% endif %}
+        {% endfor %}
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+    </script>
+{% endblock %}

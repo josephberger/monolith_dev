@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Object Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through the available firewall objects.</p>
+            <p>Examples: "NAME OF OBJECT GROUP", *Partofname*, name:Name, name AND name-other1 AND NOT other-name2</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+
+        {% if hits is not none %}
+        <hr style="width75%">
+        <br>
+        {{ hits|length }} search results.
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Tag</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for h in hits %}
+                <tr>
+                    <td><a href={{ root_uri }}object_info?object="{{ h.name}}">{{ h.name }}</a></td>
+                    <td>{{h.type}}</td>
+                    <td>
+                    {% if 'tag' in h  %}
+                    {% if h.tag.member is iterable and (h.tag.member is not string) %}
+                        {% for tag in h.tag.member %}
+                            {{ tag }}<br>
+                        {% endfor %}
+                        {% else %}
+                            {{ h.tag.member }}
+                        {% endif %}
+                    {% endif %}
+                    </td>
+                    <td>{{h.firewall}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

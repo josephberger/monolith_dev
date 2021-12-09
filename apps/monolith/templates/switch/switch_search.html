@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Switch Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through the avaiable devices.</p>
+            <p>Examples: "hostname", *partofhostname*, device_type:cisco_ios, "cisco_ios" OR "arisa_eos" AND NOT "linux"</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example: "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+
+    {% if hits is not none %}
+        <hr style="width75%">
+        {{ form.export(class_="button") }}
+        {{ form.ansible(class_="button") }}
+        {{ form.selected(class_="button") }}
+        <br>
+        {{ hits|length }} search results.
+        <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="checkall"  /></th>
+                        <th>Hostname</th>
+                        <th>IP</th>
+                        <th>Device Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td><input type="checkbox" name="{{h.hostname}}_include" /></td>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td>{{ h.ip }}</td>
+                        <td>{{ h.device_type }}</td>
+                    </tr>
+
+            {% endfor %}
+                </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+    <script>
+    $(".checkall").click(function(){
+        $(this).parents('table').find(':checkbox').prop('checked', this.checked);
+    });
+    </script>
+
+
+{% endblock %}

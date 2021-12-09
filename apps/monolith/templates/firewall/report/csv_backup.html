@@ -1,0 +1,55 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <h1>Report {{ id }}</h1>
+    <form action="" method="post" novalidate>
+    </form>
+    <h3>Audit created on: {{ info.created }} </h3>
+    {# Total rule count pulled from JSON file #}
+    <h3>Total rules: {{ info.total_count }} </h3>
+
+    {# Total internet facing  #}
+    <a href="{{ url_for('report_router', id=id, report_type=report_type, param='None')}}">
+    <h3>{{ info.reports.internet.description }}: {{ info.reports.internet.count }} </h3>
+    </a>
+
+    <a href="{{ url_for('report_nohits', id=id)}}">
+        <h3>Rules with zero hits: {{ info.reports.nohits_count }} </h3>
+    </a>
+
+    <a href="{{ url_for('report_legacy', id=id)}}">
+        <h3>Rules with legacy nameing convention: {{ info.reports.legacy_count }} </h3>
+    </a>
+
+     {% if info.reports.report_182_days_count > 0 %}
+        <a href="{{ url_for('report_lasthit', id=id, days=182)}}">
+            <h3>Rules not hit in the last 182 days: {{ info.reports.report_182_days_count }} </h3>
+         </a>
+    {% else %}
+        <h3>Rules not hit in the last six months: {{ info.reports.report_182_days_count }} </h3>
+    {%endif %}
+
+    {% if info.reports.report_365_days_count > 0 %}
+        <a href="{{ url_for('report_lasthit', id=id, days=365)}}">
+            <h3>Rules not hit in the last 365 days: {{ info.reports.report_365_days_count }} </h3>
+         </a>
+    {% else %}
+        <h3>Rules not hit in the last 365 days: {{ info.reports.report_365_days_count }} </h3>
+    {%endif %}
+
+     {% if info.reports.report_none_profile > 0 %}
+        <a href="{{ url_for('report_profile', id=id, profile='none')}}">
+            <h3>Rules with "none" threat profile: {{ info.reports.report_none_profile }} </h3>
+         </a>
+    {% else %}
+        <h3>Rules with "none" threat profile: {{ info.reports.report_none_profile }} </h3>
+    {%endif %}
+
+    {% if info.reports.report_default_profile > 0 %}
+        <a href="{{ url_for('report_profile', id=id, profile='default')}}">
+            <h3>Rules with "default" threat profile: {{ info.reports.report_default_profile }} </h3>
+         </a>
+    {% else %}
+        <h3>Rules with "default" threat profile: {{ info.reports.report_default_profile.count }} </h3>
+    {%endif %}
+{% endblock %}

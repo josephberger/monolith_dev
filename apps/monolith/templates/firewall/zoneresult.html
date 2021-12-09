@@ -1,0 +1,22 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+
+    </form>
+
+        <table style="width:50%">
+        <tr>
+            <th>Firewall</th>
+            <th>Zone</th>
+        </tr>
+    {% for z in zone %}
+        <tr>
+            <td>{{ z.firewall_name }}</td>
+            <td>{{ z.zone }}</td>
+        </tr>
+
+    {% endfor %}
+    </table>
+        
+{% endblock %}

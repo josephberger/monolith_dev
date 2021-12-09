@@ -1,0 +1,21 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+    <p>
+        <h1>{{ fw_name }} - Zone {{ zone }} Routes.</h1>
+        {{ form.export() }}
+    </p>
+
+        <table id="report">
+        <tr>
+            <th>Destination</th>
+        </tr>
+    {% for route in routes %}
+        <tr>
+            <td>{{ route.destination }}</td>
+        </tr>
+    {% endfor %}
+        </table>
+    </form>
+{% endblock %}

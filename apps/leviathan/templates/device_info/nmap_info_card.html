@@ -1,0 +1,54 @@
+<div class="center-body-card">
+    <button type="button" title="Expand Task List" class="collapsible">NMAP Information</button>
+    <div class="content">
+        <div class="button-container">
+            <button class="select" title="Update Scan Info" type="submit" name="update_nmap" value="update_nmap">
+                 <img src="/static/discover.png" style="width:30px;height:30px;">
+            </button>
+        </div>
+
+        {% if data.scan|length > 0 %}
+        State: {{ data.scan.status.state }} <br>
+        {% else %}
+        State: unknown <br>
+        {% endif %}
+        Start Time: {{ data.nmap.scanstats.timestr }} <br>
+        Elapsed Time: {{ data.nmap.scanstats.elapsed }} <br>
+        Command: {{ data.nmap.command_line }} <br>
+        {% if data.scan|length > 0 %}
+        {% if data.scan.tcp %}
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>TCP Port</th>
+                <th>State</th>
+                <th>Reason</th>
+                <th>Name</th>
+                <th>Product</th>
+                <th>Extra Info</th>
+                <th>CPE</th>
+            </tr>
+            </thead>
+            <tbody>
+            {%for key in data.scan.tcp %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ data.scan.tcp[key].state }}</td>
+                <td>{{ data.scan.tcp[key].reason }}</td>
+                <td>{{ data.scan.tcp[key].name }}</td>
+                <td>{{ data.scan.tcp[key].product }}</td>
+                <td>{{ data.scan.tcp[key].extrainfo }}</td>
+                <td>{{ data.scan.tcp[key].cpe }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+        {% endif %}
+        {% endif %}
+
+    </div>
+</div>

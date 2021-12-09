@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if device %}
+
+    <div class="center-body-card">
+        <div class="table-information">Information</div>
+        <div class="button-container">
+            <button class="select" title="Re-Discover" type="submit" name="rediscover" value="rediscover">
+                 <img src="/static/discover.png" style="width:30px;height:30px;">
+            </button>
+        </div>
+
+        {% set data = device.info %}
+        {% include "device_info/endpoint_info_card.html" %}
+
+    </div>
+
+    {%endif %}
+
+    {% if device.nmap_info %}
+        {% set data = device.nmap_info %}
+        {% include "device_info/nmap_info_card.html" %}
+    {%endif %}
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    }
+</script>
+{% endblock %}

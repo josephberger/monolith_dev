@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ info.hostname }} MAC Table</h1>
+    <form action="" method="post" novalidate>
+    <br>
+    <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>MAC</th>
+                    <th>VLAN</th>
+                    <th>Type</th>
+                    <th>Interface</th>
+                    <th>Moves</th>
+                    <th>Last Move</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for mac in macs %}
+                <tr>
+                    <td>{{ mac.macAddress }}</td>
+                    <td>{{ mac.vlanId }}</td>
+                    <td>{{ mac.entryType }}</td>
+                    <td>{{ mac.interface }}</td>
+                    <td>{{ mac.moves }}</td>
+                    <td>{{ mac.lastMove }}</td>
+
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+    </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+<table>
+    <thead>
+    <tr>
+        {% for header in table_data.headers %}
+        <th>{{ header }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for data in table_data.data %}
+    <tr title="{{ data.job_id }}">
+        {% for key in table_data.data_keys %}
+        <td>{{data[key]}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>

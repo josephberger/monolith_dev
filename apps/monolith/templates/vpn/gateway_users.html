@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+
+        <h3>Gateway {{ status.name }} currently has {{ status.CurrentUsers }} users</h3>
+        <h3>*Information updated on: {{ status.updated_at }}</h3>
+        <h4>Total Connect via IPv6: {{ vsix_users }}</h4>
+
+
+        {% if users is not none %}
+        <p>
+            {{ form.export(class_="button") }}
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th class="table-sort">Username</th>
+                    <th>Client</th>
+                    <th>Computer</th>
+                    <th>Public IP</th>
+                    <th>Virtual IP</th>
+                    <th>Public IPv6</th>
+                    <th>Virtual IPv6</th>
+                    <th class="table-sort">Login Time</th>
+                    <th>Encapsulation</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Logs</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.primary_username }}</td>
+                    <td>{{ user.client }}</td>
+                    <td>{{ user.computer }}</td>
+                    <td>{{ user.public_ip }}</td>
+                    <td>{{ user.virtual_ip }}</td>
+                    <td>{{ user.public_ipv6 }}</td>
+                    <td>{{ user.virtual_ipv6 }}</td>
+                    <td>{{ user.login_time }}</td>
+                    <td>{{ user.tunnel_type }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td><a href="{{ url_for('userlogs', user=user.primary_username)}}">User Logs</a></td>
+                </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+{% endblock %}

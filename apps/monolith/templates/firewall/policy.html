@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+
+    <h3>Policy</h3>
+
+    <table style="width:50%">
+
+    <tr>
+
+        <th>Selection</th>
+        <th>Description</th>
+
+    </tr>
+        {% if hits is not none %}
+            {% for fw in firewalls %}
+            <tr>
+                <td><a href="{{ url_for('fw_policy', firewall=fw)}}">{{fw}}</a></td>
+                <td>Displays the entire policy for the {{ fw }} firewall.</td>
+            </tr>
+            {% endfor %}
+        {%endif %}
+
+        <tr>
+            <td><a href="{{ url_for('policy_search')}}">Policy Search</a></td>
+            <td>Perform a search against all firewall.</td>
+        </tr>
+
+    </table>
+
+</form>
+
+{% endblock %}

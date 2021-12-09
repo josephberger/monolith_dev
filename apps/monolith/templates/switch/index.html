@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+
+    <h3>Switch</h3>
+
+    <table style="width:50%">
+    <tr>
+        <th>Selection</th>
+        <th>Description</th>
+    </tr>
+
+        <tr>
+            <td><a href="{{ url_for('switch_search')}}">Inventory</a></td>
+            <td>Use elastichsearch lucene to query for devices</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('interface_search')}}">Interfaces</a></td>
+            <td>Use elastichsearch lucene to query for interfaces</td>
+
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('vlan_search')}}">Vlans</a></td>
+            <td>Use elastichsearch lucene to query for vlans</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('neighbor_search')}}">Neighbors</a></td>
+            <td>Use elastichsearch lucene to query for LLDP neighbors</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('vrf_search')}}">VRFs</a></td>
+            <td>Use elastichsearch lucene to query for VRFs</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('equipment_search')}}">Equipment</a></td>
+            <td>Use elastichsearch lucene to query Serial Numbers, PIDs ect</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('switch_search')}}">Routes</a></td>
+            <td>Use elastichsearch lucene to "master router"</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('historical_switch_search')}}">Historical</a></td>
+            <td>Use elastichsearch lucene to query for devices through the history</td>
+        </tr>
+    </table>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Historical Device Info</h1>
+    <form action="" method="post" novalidate>
+    {{ date }}
+    <br>
+
+    <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>IP</th>
+                    <th>Device Type</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>{{ info.info.hostname }}</td>
+                    <td>{{ info.info.ip }}</td>
+                    <td>{{ info.info.device_type }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+    </form>
+
+{% endblock %}

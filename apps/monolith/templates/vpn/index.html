@@ -1,0 +1,27 @@
+ {% extends "base.html" %}
+
+{% block content %}
+
+ <form action="" method="post" novalidate>
+
+    <h3>VPN</h3>
+
+    <table style="width:50%">
+    <tr>
+        <th>Selection</th>
+        <th>Description</th>
+    </tr>
+
+        <tr>
+            <td><a href="{{ url_for('gateways')}}">Gateways</a></td>
+            <td>Provides user information for each gateway (updated every 5 minutes).</td>
+        </tr>
+        <tr>
+            <td><a href="{{ url_for('userlogs', user='none')}}">User Logs</a></td>
+            <td>Check system logs relating to a specific user (do not use ornl/UID just use UID).</td>
+        </tr>
+    </table>
+
+</form>
+
+{% endblock %}

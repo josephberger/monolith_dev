@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Interface Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through all interfaces across all devices.</p>
+            <p>Examples: "hostname", *partofname*, mode:trunk, "hostname" AND "1/0/9" AND NOT shutdown</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example: "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+    <br>
+
+    <input type="checkbox" name="includeconfig"> Include Config?
+    {% if hits is not none %}
+        <hr style="width75%">
+        {{ form.export(class_="button") }}
+        <table>
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>Name</th>
+                        <th>Mode</th>
+                        <th>Description</th>
+                        <th>IP Addresses</th>
+                        {% if include_config is not none %}
+                        <th>Config</th>
+                        {% else %}
+                        {%endif %}
+                        <th>Options</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td>{{ h.name }}</td>
+                        <td>{{ h.mode }}</td>
+                        <td>{{ h.description }}</td>
+                        {% if 'addresses' in h %}
+                            <td>
+                            {% for key, value in h.addresses.items() %}
+                                {{key}} : {{value}} <br>
+                            {% endfor %}
+                            </td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        {% if include_config is not none %}
+                            <td>{% for c in h.config %}
+                                    {{ c }}<br>
+                                {% endfor %}
+                            </td>
+                        {% else %}
+                        {%endif %}
+                        <td><button name="show" value={{ h.hostname}}!SEPARATOR!{{ h.name }} type="submit">Show</button></td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

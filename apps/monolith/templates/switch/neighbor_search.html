@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Neighbor Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through all neighbors across all devices.</p>
+            <p>Examples: "hostname", *partofname*, "hostname" AND AND NOT "otherhostname"</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example: "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+    {% if hits is not none %}
+        <hr style="width75%">
+        {{ form.export(class_="button") }}
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>Local Port</th>
+                        <th>Neighbor Device</th>
+                        <th>Neighbor Port</th>
+                </thead>
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td>{{ h.local_port }}</td>
+                        <td>{{ h.neighbor_device }}</td>
+                        <td>{{ h.neighbor_port }}</td>
+                {% endfor %}
+        </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ info.hostname }} Interface Status</h1>
+    <form action="" method="post" novalidate>
+    <br>
+    <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Mode</th>
+                    <th>Vlan</th>
+                    <th>Vlan Info</th>
+                    <th>Duplex</th>
+                    <th>Speed</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for interface in interfaces.interfaceStatuses %}
+                <tr>
+                    <td>{{ interface }}</td>
+
+                    <td>{{ interfaces.interfaceStatuses[interface].description }}</td>
+                    {% if interfaces.interfaceStatuses[interface].linkStatus == "notconnect" %}
+                        <td><font color = "red">{{ interfaces.interfaceStatuses[interface].linkStatus }}</font></td>
+                    {% elif interfaces.interfaceStatuses[interface].linkStatus == "connected" %}
+                        <td><font color = "green">{{ interfaces.interfaceStatuses[interface].linkStatus }}</font></td>
+                    {% else %}
+                        <td>{{ interfaces.interfaceStatuses[interface].linkStatus }}</td>
+                    {% endif %}
+                    <td>{{ interfaces.interfaceStatuses[interface].vlanInformation.interfaceMode }}</td>
+                    <td>{{ interfaces.interfaceStatuses[interface].vlanInformation.vlanId }}</td>
+                    <td>{{ interfaces.interfaceStatuses[interface].vlanInformation.vlanExplanation }}</td>
+                    <td>{{ interfaces.interfaceStatuses[interface].duplex }}</td>
+                    <td>{{ interfaces.interfaceStatuses[interface].bandwidth }}</td>
+                    <td>{{ interfaces.interfaceStatuses[interface].interfaceType }}</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+    </form>
+
+
+{% endblock %}

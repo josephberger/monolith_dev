@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Firewall Info</h1>
+    <form action="" method="post" novalidate>
+
+    {% if fw is not none %}
+
+        <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Panorama</th>
+                        <th>Virtual System</th>
+                        <th>Virtual Router</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ fw.name }}</td>
+                        <td>{{ fw.pan_dg }}</td>
+                        <td>{{ fw.vsys_name }}</td>
+                        <td>{{ fw.vr }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+
+    {% else %}
+    {%endif %}
+
+    {% if zones|length > 0 %}
+    <button type="button" class="collapsible">Zones</button>
+    <div class="content">
+        <br>
+        <button name="export_all_routes" value={{ zone }} type="submit" class="button">Export All Routes</button>
+        <br>
+        <br>
+        {% for zone in zones %}
+        <button type="button" class="collapsible">{{ zone }}</button>
+        <div class="content">
+            <br>
+            {% if zones[zone].routes|length > 0 %}
+            <button name="export_routes" value={{ zone }} type="submit" class="button">Export</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Destination</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for route in zones[zone].routes %}
+                    <tr>
+                        <td>{{ route.destination }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            {% else %}
+            <br>
+            {%endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {%endif %}
+
+    {% if interfaces|length > 0 %}
+    <button type="button" class="collapsible">Interfaces</button>
+    <div class="content">
+        <br>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Tag</th>
+                    <th>Zone</th>
+                    <th>IPv4</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for interface in interfaces %}
+                <tr>
+                    <td>{{ interface }}</td>
+                    <td>{{ interfaces[interface].tag }}</td>
+                    <td>{{ interfaces[interface].zone }}</td>
+                    <td>{{ interfaces[interface].ip }}</td>
+                    <td><button name="show_routes" value={{ interface }} type="submit" class="action_button">Show Routes</button>
+                        <button name="show_arp" value={{ interface }} type="submit" class="action_button">Show ARP</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    </div>
+    {%endif %}
+
+    </form>
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+       </script>
+
+{% endblock %}

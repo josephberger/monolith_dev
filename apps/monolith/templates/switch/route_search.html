@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Switch Route Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    {{ form.submit(class_="button") }}
+
+    {% if routes is not none %}
+        <hr style="width75%">
+        <br>
+        {{ routes|length }} search results.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>hostname</th>
+                        <th>protocol</th>
+                        <th>subnet</th>
+                        <th>next hop</th>
+                        <th>metric</th>
+                        <th>admin distance</th>
+                        <th>vrf</th>
+                        <th>egress interface</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for route in routes %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ route.hostname}}">{{ route.hostname }}</a></td>
+                        <td>{{ route.protocol }}</td>
+                        <td><a href={{ root_uri }}route_info?subnet="{{ route.subnet }}">{{ route.subnet }}</a></td>
+                        <td>{{ route.nextHop }}</td>
+                        <td>{{ route.metric }}</td>
+                        <td>{{ route.adminDistance }}</td>
+                        <td>{{ route.vrf }}</td>
+                        <td>{{ route.egressInterface }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+{% endblock %}

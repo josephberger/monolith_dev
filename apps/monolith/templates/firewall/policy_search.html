@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Policy Search</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through the available firewall policies.</p>
+            <p>Examples: "firewall", source:*source_object*, enabled, "TCP-80" AND NOT "TCP-443"</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example: "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+
+        {% if hits is not none %}
+        <hr style="width75%">
+        <br>
+        {{ hits|length }} search results.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Firewall</th>
+                        <th>Rule Index</th>
+                        <th>Name</th>
+                        <th>From Zone</th>
+                        <th>Source</th>
+                        <th>To Zone</th>
+                        <th>Destination</th>
+                        <th>Service</th>
+                        <th>Application</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    {% if h.status == "enabled" %}
+                        <tr>
+                            <td>{{h.firewall}}</td>
+                            <td>{{h.rule_index}}</td>
+                            <td>{{ h.name }}</td>
+                            <td>{% for f in h.from.member %}
+                                    {{ f }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for s in h.source.member %}
+                                    <a href={{ root_uri }}object_info?object="{{ s }}">{{ s }}</a><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for t in h.to.member %}
+                                    {{ t }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for d in h.destination.member %}
+                                    <a href={{ root_uri }}object_info?object="{{ d }}">{{ d }}</a><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for s in h.service.member %}
+                                    {{ s }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for a in h.application.member %}
+                                    {{ a }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>{{ h.action }}</td>
+                            <td>{{ h.status }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td><font color = "gray" style="font-style: italic;">{{h.firewall}}</font><br></td>
+                            <td><font color = "gray" style="font-style: italic;">{{h.rule_index}}</font><br></td>
+                            <td><font color = "gray" style="font-style: italic;">{{ h.name }}</font><br></td>
+                            <td>{% for f in h.from.member %}
+                                <font color = "gray" style="font-style: italic;">{{ f }}</font><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for s in h.source.member %}
+                                <font color = "gray" style="font-style: italic;"><a href={{ root_uri }}object_info?object="{{ s }}">{{ s }}</a><br></font><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for t in h.to.member %}
+                                <font color = "gray" style="font-style: italic;"><a href={{ root_uri }}object_info?object="{{ d }}">{{ d }}</a><br></font><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for d in h.destination.member %}
+                                <font color = "gray" style="font-style: italic;">{{ d }}</font><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for s in h.service.member %}
+                                <font color = "gray" style="font-style: italic;">{{ s }}</font><br>
+                                {% endfor %}
+                            </td>
+                            <td>{% for a in h.application.member %}
+                                <font color = "gray" style="font-style: italic;">{{ a }}</font><br>
+                                {% endfor %}
+                            </td>
+                            <td><font color = "gray" style="font-style: italic;">{{ h.action }}</font><br></td>
+                            <td><font color = "gray" style="font-style: italic;">{{ h.status }}</font><br></td>
+                        </tr>
+                    {%endif %}
+
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

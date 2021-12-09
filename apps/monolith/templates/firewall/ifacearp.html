@@ -1,0 +1,28 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+    <p>
+        <h1>{{ fw_name }} - Interface {{ iface }} ARP</h1>
+    </p>
+    {% if arps is not none %}
+        <table>
+        <tr>
+            <th>Status</th>
+            <th>IP</th>
+            <th>MAC</th>
+            <th>TTL</th>
+
+        </tr>
+    {% for arp in arps %}
+        <tr>
+            <td>{{ arp.status }}</td>
+            <td>{{ arp.ip }}</td>
+            <td>{{ arp.mac }}</td>
+            <td>{{ arp.ttl }}</td>
+        </tr>
+    {% endfor %}
+        </table>
+    {% endif %}
+    </form>
+{% endblock %}

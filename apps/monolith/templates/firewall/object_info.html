@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Object Info</h1>
+    <form action="" method="post" novalidate>
+
+
+    {% if objects is not none  %}
+
+    {% if objects|length > 1 %}
+         Duplicates found
+        <br>
+    {%endif %}
+
+    {% for object in objects %}
+
+
+            {% if 'address' == object.type  %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+
+                        {% if 'ip-netmask' in object  %}
+                        <th>IP-Netmask</th>
+
+                        {% elif 'fqdn' in object  %}
+                        <th>FQDN</th>
+
+                        {% elif 'ip-range' in object  %}
+                        <th>IP Range</th>
+                        {%endif %}
+
+                        <th>Tags</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ object.name }}</td>
+
+                        {% if 'ip-netmask' in object  %}
+                        <td>{{ object['ip-netmask'] }}</td>
+
+                        {% elif 'fqdn' in object  %}
+                        <td>{{ object['fqdn'] }}</td>
+
+                        {% elif 'ip-range' in object  %}
+                        <td>{{ object['ip-range'] }}</td>
+                        {% endif %}
+
+                        <td>
+                        {% if 'tag' in object  %}
+                            {% if object.tag.member is iterable and (object.tag.member is not string) %}
+                                {% for tag in object.tag.member %}
+                                    {{ tag }}<br>
+                                {% endfor %}
+                            {% else %}
+                                {{ object.tag.member }}
+                            {% endif %}
+                        {% endif %}
+                        </td>
+                        <td>{{ object.type }}</td>
+                        <td>{{ object.firewall }}</td>
+                </tbody>
+            </table>
+            {% elif 'address-group' == object.type %}
+                  <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+
+                        {% if 'static' in object  %}
+                        <th>Static Members</th>
+
+                        {% elif 'dynamic' in object  %}
+                        <th>Dynamic Filter</th>
+
+                        {%endif %}
+
+                        <th>Tags</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ object.name }}</td>
+
+                        {% if 'static' in object  %}
+                        <td>
+                            {% if object.static.member is iterable and (object.static.member is not string) %}
+                                {% for member in object.static.member %}
+                                    <a href={{ root_uri }}object_info?object="{{ member}}">{{ member }}</a><br>
+                                {% endfor %}
+                            {% else %}
+                                <a href={{ root_uri }}object_info?object="{{ object.static.member}}">{{ object.static.member }}</a>
+                            {% endif %}
+                        </td>
+
+                        {% elif 'dynamic' in object  %}
+                        <td>
+                            {% if object.dynamic.filter is iterable and (object.dynamic.filter is not string) %}
+                                {% for member in object.dynamic.filter %}
+                                    {{ member }}<br>
+                                {% endfor %}
+                            {% else %}
+                                {{ object.dynamic.filter }}
+                            {% endif %}
+                        </td>
+
+                        {% endif %}
+
+                        <td>
+                        {% if 'tag' in object  %}
+                            {% if object.tag.member is iterable and (object.tag.member is not string) %}
+                                {% for tag in object.tag.member %}
+                                    {{ tag }}<br>
+                                {% endfor %}
+                            {% else %}
+                                {{ object.tag.member }}
+                            {% endif %}
+
+
+                        {% endif %}
+                        </td>
+                        <td>{{ object.type }}</td>
+                        <td>{{ object.firewall }}</td>
+                </tbody>
+            </table>
+            {%endif %}
+        <br>
+        {% endfor %}
+        {%endif %}
+    </form>
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+       </script>
+
+{% endblock %}

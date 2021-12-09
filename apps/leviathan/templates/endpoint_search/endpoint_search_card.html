@@ -1,0 +1,21 @@
+<table>
+    <thead>
+    <tr>
+        <th>Hostname</th>
+        <th>IP Address</th>
+        <th>Device Type</th>
+        <th>Update Time</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for d in data %}
+    <tr>
+        <td><a href="{{ url_for('endpoint_info', hostname= d.hostname) }}">{{ d.hostname }}</a></td>
+        <td>{{ d.ip }}</td>
+        <td>{{ d.device_type }}</td>
+        <td>{{ d.update_time }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

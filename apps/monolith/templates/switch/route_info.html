@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Subnet Info </h1>
+<form action="" method="post" novalidate>
+
+
+    {% if info is not none %}
+    <h3>Subnet: {{ info.subnet }}</h3>
+    <br>
+    {% if info.location|length > 0 %}
+    <button type="button" class="collapsible">Location</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>hostname</th>
+                <th>protocol</th>
+                <th>subnet</th>
+                <th>next hop</th>
+                <th>metric</th>
+                <th>admin distance</th>
+                <th>vrf</th>
+                <th>attached interface</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for route in info.location %}
+            <tr>
+                <td><a href={{ root_uri }}switch_info?hostname="{{ route.hostname}}">{{ route.hostname }}</a></td>
+                <td>{{ route.protocol }}</td>
+                <td>{{ route.subnet }}</td>
+                <td>{{ route.nextHop }}</td>
+                <td>{{ route.metric }}</td>
+                <td>{{ route.adminDistance }}</td>
+                <td>{{ route.vrf }}</td>
+                <td>{{ route.egressInterface }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+
+    {% if info.found|length > 0 %}
+    <button type="button" class="collapsible">Found On</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>hostname</th>
+                <th>protocol</th>
+                <th>subnet</th>
+                <th>next hop</th>
+                <th>metric</th>
+                <th>admin distance</th>
+                <th>vrf</th>
+                <th>egress interface</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for route in info.found %}
+            <tr>
+                <td><a href={{ root_uri }}switch_info?hostname="{{ route.hostname}}">{{ route.hostname }}</a></td>
+                <td>{{ route.protocol }}</td>
+                <td>{{ route.subnet }}</td>
+                {% if route.nextHopFound == "no" %}
+                    <td>{{ route.nextHop }}</td>
+                {% else %}
+                    <td><a href={{ root_uri }}switch_info?hostname="{{ route.nextHop}}">{{ route.nextHop }}</a></td>
+                {% endif %}
+                <td>{{ route.metric }}</td>
+                <td>{{ route.adminDistance }}</td>
+                <td>{{ route.vrf }}</td>
+                <td>{{ route.egressInterface }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+
+    {% if info.fw_zones|length > 0 %}
+    <button type="button" class="collapsible">FW Zones</button>
+    <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+            <tr>
+                <th>firewall</th>
+                <th>zone</th>
+                <th>subnet</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for zone in info.fw_zones %}
+            <tr>
+                <td>{{ zone.firewall }}</td>
+                <td>{{ zone.zone }}</td>
+                <td>{{ zone.destination }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {%endif %}
+
+    {% else %}
+    {%endif %}
+</form>
+<script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+
+</script>
+
+{% endblock %}

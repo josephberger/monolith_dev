@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Diff Switch Info</h1>
+    <form action="" method="post" novalidate>
+        <b style="color:blue;">{{ first_date }}</b> VS <b style="color:green;">{{ second_date }}</b>
+    <br>
+    {% if device is not none %}
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>IP</th>
+                        <th>Device Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in device %}
+                    <tr>
+                        <td>{{ h.hostname }}</td>
+                        <td>{{ h.ip }}</td>
+                        <td>{{ h.device_type }}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+            <br>
+        <br>
+    {% else %}
+    {%endif %}
+    {% if interfaces is not none %}
+        <button type="button" class="collapsible">Interfaces</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Mode</th>
+                    <th>Description</th>
+                    <th>IP Addresses</th>
+                    {% if include_config is not none %}
+                    <th>Config</th>
+                    {% else %}
+                    {%endif %}
+
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for h in interfaces %}
+                <tr>
+                    <td><b style="color:blue;">{{ first_date}}</b></td>
+                    <td>{{ h.first.name }}</td>
+                    <td>{{ h.first.mode }}</td>
+                    <td>{{ h.first.description }}</td>
+                    {% if 'addresses' in h.first%}
+                        <td>
+                        {% for key, value in h.first.addresses.items() %}
+                            {{key}} : {{value}} <br>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% if include_config is not none %}
+                        <td>{% for c in h.first.config %}
+                                {{ c }}<br>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                    {%endif %}
+                </tr>
+                <tr>
+                    <td><b style="color:green;">{{ second_date }}</b></td>
+                    <td>{{ h.second.name }}</td>
+                    <td>{{ h.second.mode }}</td>
+                    <td>{{ h.second.description }}</td>
+                    {% if 'addresses' in h.second%}
+                        <td>
+                        {% for key, value in h.second.addresses.items() %}
+                            {{key}} : {{value}} <br>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% if include_config is not none %}
+                        <td>{% for c in h.second.config %}
+                                {{ c }}<br>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                    {%endif %}
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    {% if vlans is not none %}
+        <button type="button" class="collapsible">Vlans</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Number</th>
+                        <th>Name</th>
+                </thead>
+                <tbody>
+                {% for h in vlans %}
+                    <tr>
+                        <td><b style="color:blue;">{{ first_date }}</b></td>
+                        <td><a href={{ root_uri }}vlan_info?vlan={{ h.first.number}}>{{ h.first.number }}</a></td>
+                        <td>{{ h.first.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b style="color:green;">{{ second_date }}</b></td>
+                        <td><a href={{ root_uri }}vlan_info?vlan={{ h.first.number}}>{{ h.second.number }}</a></td>
+                        <td>{{ h.second.name }}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    {% if neighbors is not none %}
+        <button type="button" class="collapsible">Neighbors</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Local Port</th>
+                        <th>Neighbor Device</th>
+                        <th>Neighbor Port</th>
+                </thead>
+                <tbody>
+                {% for h in neighbors %}
+                    <tr>
+                        <td><b style="color:blue;">{{ first_date }}</b></td>
+                        <td>{{ h.first.local_port }}</td>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.first.neighbor_device}}">{{ h.first.neighbor_device }}</a></td>
+                        <td>{{ h.first.neighbor_port }}</td>
+                    </tr>
+                    <tr>
+                        <td><b style="color:green;">{{ second_date }}</b></td>
+                        <td>{{ h.second.local_port }}</td>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.second.neighbor_device}}">{{ h.second.neighbor_device }}</a></td>
+                        <td>{{ h.second.neighbor_port }}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    {% if vrfs is not none %}
+        <button type="button" class="collapsible">VRFs</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                </thead>
+                <tbody>
+                {% for h in vrfs %}
+                    <tr>
+                        <td><b style="color:blue;">{{ first_date }}</b></td>
+                        <td>{{ h.first.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><b style="color:green;">{{ second_date }}</b></td>
+                        <td>{{ h.second.name }}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    {% if equipment is not none %}
+        <button type="button" class="collapsible">Equipment</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>PID</th>
+                        <th>Serial Number</th>
+                        <th>Description</th>
+                </thead>
+                <tbody>
+                {% for h in equipment %}
+                    <tr>
+                        <td><b style="color:blue;">{{ first_date }}</b></td>
+                        <td>{{ h.first.name }}</td>
+                        <td>{{ h.first.pid }}</td>
+                        <td>{{ h.first.sn }}</td>
+                        <td>{{ h.first.description }}</td>
+                    </tr>
+                    <tr>
+                        <td><b style="color:green;">{{ second_date }}</b></td>
+                        <td>{{ h.second.name }}</td>
+                        <td>{{ h.second.pid }}</td>
+                        <td>{{ h.second.sn }}</td>
+                        <td>{{ h.second.description }}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+       </script>
+
+{% endblock %}

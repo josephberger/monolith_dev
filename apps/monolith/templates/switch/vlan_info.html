@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Vlan Info</h1>
+    <form action="" method="post" novalidate>
+
+    <h4>Vlan Number: {{ vlan_number }}</h4>
+    {% if uname is not none %}
+        <button type="button" class="collapsible">Unique Names</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for uname in unames %}
+                <tr>
+                    <td>{{ uname }}</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+            </div>
+    {% else %}
+    {%endif %}
+    {% if vlans is not none %}
+        <button type="button" class="collapsible">Found on Devices</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>Number</th>
+                        <th>Name</th>
+                </thead>
+                <tbody>
+                {% for v in vlans %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ v.hostname}}">{{ v.hostname }}</a></td>
+                        <td>{{ v.number }}</td>
+                        <td>{{ v.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
+        </div>
+    {% else %}
+    {%endif %}
+    {% if svis is not none %}
+        <button type="button" class="collapsible">Associated SVIs</button>
+        <div class="content">
+        <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>IP Addresses</th>
+                    <th>Config</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for h in svis %}
+                <tr>
+                    <td><a href={{ root_uri }}switch_info?hostname="{{ h.neighbor_device}}">{{ h.hostname }}</a></td>
+                    <td>{{ h.name }}</td>
+                    <td>{{ h.description }}</td>
+                    {% if 'addresses' in h %}
+                        <td>
+                        {% for key, value in h.addresses.items() %}
+                            {{key}} : {{value}} <br>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    <td>{% for c in h.config %}
+                            {{ c }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+            </div>
+    {% else %}
+    {%endif %}
+    </form>
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+       </script>
+
+{% endblock %}

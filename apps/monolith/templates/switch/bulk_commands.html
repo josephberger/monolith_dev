@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Bulk Switch Commands</h1>
+    <form action="" method="post" novalidate>
+    {{ form.show_mac_addr_table(class_="button") }} |
+
+    {% if hits is not none %}
+        {{ form.vrf_interface_report(class_="button") }}
+        <select name="vrf" method="GET" action="/">
+            <option value="all_vrfs">all_vrfs</option>
+            {% for v in vrfs %}
+            <option value="{{v}}">{{v}}</option>
+            "
+            {% endfor %}
+    {% endif %}
+
+    </select>
+
+    {% if hits is not none %}
+        <br>
+        {{ hits|length }} available for bulk commands.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>IP</th>
+                        <th>Device Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td>{{ h.ip }}</td>
+                        <td>{{ h.device_type }}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+    {% else %}
+    {%endif %}
+    <br>
+    {% if omitted is not none %}
+        <br>
+        {{ omitted|length }} omitted for bulk commands.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>Hostname</th>
+                        <th>IP</th>
+                        <th>Device Type</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in omitted %}
+                    <tr>
+                        <td><a href={{ root_uri }}switch_info?hostname="{{ h.hostname}}">{{ h.hostname }}</a></td>
+                        <td>{{ h.ip }}</td>
+                        <td>{{ h.device_type }}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+
+{% endblock %}

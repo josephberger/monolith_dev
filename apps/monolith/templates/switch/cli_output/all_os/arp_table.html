@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ info.hostname }} ARP Table vrf {{ vrf }}</h1>
+    <form action="" method="post" novalidate>
+    <br>
+    <table id="report" class="table-sort table-sort-search">
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>VLAN ID</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for arp in arps %}
+                <tr>
+                    <td>{{ arp.ipAddress }}</td>
+                    <td>{{ arp.macAddress }}</td>
+                    <td>{{ arp.vlanId }}</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+    </form>
+{% endblock %}

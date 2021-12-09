@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Internal FirewallAudits</h1>
+    <form action="" method="post" novalidate>
+        <h3>Generate Audit from
+        <a href="{{ url_for('generateaudit', id=id)}}">
+            CSV
+        </a>
+            |
+        <a href="{{ url_for('genaudit_api', id=id)}}">
+            API
+        </a>
+        </h3>
+    <br>
+    </form>
+
+    {% if audits is not none %}
+
+        <table style="width:50%">
+            <tr>
+            <th>Audit ID</th>
+            <th>Date Created</th>
+            <th>Type</th>
+            </tr>
+
+        {% for audit in audits %}
+
+            <tr>
+            <td><a href="{{ url_for('report', id=audit.id)}}">
+            {{ audit.id }}
+            </a></td>
+            <td>{{ audit.created }}</td>
+            <td>{{ audit.type }}</td>
+            </tr>
+        {% endfor %}
+
+        </table>
+
+    {% else %}
+    {%endif %}
+{% endblock %}

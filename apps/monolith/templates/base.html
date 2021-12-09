@@ -1,0 +1,58 @@
+
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Monolith</title>
+      {% else %}
+      <title>Welcome to Monolith</title>
+      {% endif %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></link>
+    </head>
+    <nav role="navigation" class="navbar">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/firewall">Firewall</a>
+          <ul class="dropdown">
+            <li><a href="/firewall/fw_search">Firewalls</a></li>
+            <li><a href="/firewall/zonelookup">Zone Lookup</a></li>
+            <li><a href="/firewall/audits">Audits</a></li>
+            <li><a href="/firewall/policy">Policy</a></li>
+            <li><a href="/firewall/object_search">Objects</a></li>
+            <li><a href="/firewall/policytest">Policy Test</a></li>
+            <li><a href="/firewall/route_search">Routes</a></li>
+            <li><a href="/firewall/blackhole_ip">BH-IPs</a></li>
+            <li><a href="/firewall/blackhole_domain">BH-Domains</a></li>
+          </ul>
+        </li>
+        <li><a href="/vpn">VPN</a>
+          <ul class="dropdown">
+            <li><a href="/vpn/gateways">Gateways</a></li>
+          </ul>
+        </li>
+         <li><a href="/switch">Switch</a>
+          <ul class="dropdown">
+            <li><a href="/switch/switch_search">Inventory</a></li>
+            <li><a href="/switch/interface_search">Interfaces</a></li>
+            <li><a href="/switch/vlan_search">Vlans</a></li>
+            <li><a href="/switch/neighbor_search">Neighbors</a></li>
+            <li><a href="/switch/vrf_search">VRFs</a></li>
+            <li><a href="/switch/equipment_search">Equipment</a></li>
+            <li><a href="/switch/route_search">Routes</a></li>
+            <li><a href="/switch/historical_switch_search">Historical</a></li>
+          </ul>
+        </li>
+        <li class="li_help"><a href="#">Help</a></li>
+      </ul>
+    </nav>
+
+    <body>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

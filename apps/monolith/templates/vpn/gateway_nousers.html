@@ -1,0 +1,11 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="get" novalidate>
+
+    </form>
+
+        <h3>Gateway {{ status.name }} currently has {{ status.CurrentUsers }} users</h3>
+        <h3>*Information updated on: {{ status.updated_at }}</h3>
+        <h4></h4>
+{% endblock %}

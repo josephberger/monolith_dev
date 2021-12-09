@@ -1,0 +1,31 @@
+ {% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+    <p>
+        <h1>{{ fw_name }} - Interface {{ iface }} Routes.</h1>
+    </p>
+    {% if routes is not none %}
+        <table>
+        <tr>
+            <th>Destination</th>
+            <th>Next Hop</th>
+            <th>Metric</th>
+            <th>Flags</th>
+            <th>Age</th>
+            <th>Virtual Router</th>
+        </tr>
+    {% for route in routes %}
+        <tr>
+            <td>{{ route.destination }}</td>
+            <td>{{ route.nexthop }}</td>
+            <td>{{ route.metric }}</td>
+            <td>{{ route.flags}}</td>
+            <td>{{ route.age }}</td>
+            <td>{{ route.virtual_router }}</td>
+        </tr>
+    {% endfor %}
+        </table>
+    {% endif %}
+    </form>
+{% endblock %}

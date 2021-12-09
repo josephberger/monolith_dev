@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Blackhole IPs</h1>
+    <form action="" method="post" novalidate>
+    {{ form.searchbar() }}
+    <div class="tooltip">
+        <span class="tooltiptext">
+            <p>Use lucene syntax to search through the blackholed IPs.</p>
+            <p>Examples: 10.100* AND 8.8.*, 10.100.1.1, *100.1</p>
+            <p>Note: dashes and underscores are considered whitespace so they must be encompassed by "".  Example: "SWA-1"</p>
+        </span>
+        <div class="tool-box">?</div>
+    </div>
+    {{ form.submit(class_="button") }}
+
+    {% if hits is not none %}
+        <hr style="width75%">
+        <br>
+        {{ hits|length }} search results.
+        <table id="report" class="table-sort table-sort-search">
+                <thead>
+                    <tr>
+                        <th>IP</th>
+                        <th>Date/Time Added</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for h in hits %}
+                    <tr>
+                        <td>{{ h.ip }}</td>
+                        <td>{{ h.timestamp }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+    {% else %}
+    {%endif %}
+    </form>
+
+{% endblock %}

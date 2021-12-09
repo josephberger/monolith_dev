@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+
+    {% for fw in firewalls %}
+
+    <h3>{{ fw.name }}</h3>
+    <table style="width:50%">
+    <tr>
+        <th>Zone</th>
+    </tr>
+
+        {% for zone in fw.zones %}
+
+        <tr>
+            <td><a href="{{ url_for('zone_routes', fw=fw.name, zone=zone)}}">{{ zone}}</td>
+        </tr>
+
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+
+</form>
+
+{% endblock %}

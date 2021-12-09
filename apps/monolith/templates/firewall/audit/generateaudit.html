@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Generate Audit</h1>
+<form action="/firewall/generateaudit" method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p>{{ form.file(class_="button") }}</p>
+    <p>{{ form.submit(class_="button") }}</p>
+</form>
+
+
+{% endblock %}
