@@ -3,7 +3,7 @@ import yaml
 
 from config import GlobalConfig, ElasticConfig, LogConfig
 from models import ElasticIndex
-from ctrl import discover
+from ctrl import discover, load
 from models.devices import SwitchCLI
 
 LOG_INDEX = LogConfig.LOG_INDEX
@@ -11,11 +11,19 @@ LOG_INDEX = LogConfig.LOG_INDEX
 ENDPOINT_INDEX = ElasticIndex(ElasticConfig.ENDPOINT_INDEX,
                               host=ElasticConfig.HOST,
                               port=ElasticConfig.PORT)
-NMAP_INDEX = ElasticIndex(ElasticConfig.ENDPOINT_INDEX,
+
+EP_DETAILS_INDEX = ElasticIndex(ElasticConfig.EP_DETAILS_INDEX,
+                                host=ElasticConfig.HOST,
+                                port=ElasticConfig.PORT)
+NMAP_INDEX = ElasticIndex(ElasticConfig.NMAP_INDEX,
                           host=ElasticConfig.HOST,
                           port=ElasticConfig.PORT)
 
 VLAN_INDEX = ElasticIndex(ElasticConfig.VLAN_INDEX,
+                          host=ElasticConfig.HOST,
+                          port=ElasticConfig.PORT)
+
+INTERFACE_INDEX = ElasticIndex(ElasticConfig.INTERFACE_INDEX,
                           host=ElasticConfig.HOST,
                           port=ElasticConfig.PORT)
 
@@ -60,7 +68,12 @@ def __record_device_info(ip):
         LOG_INDEX.generate_log(message=f"device_type for {ip} discovered: {record['device_type']}", process="record_device_info")
 
         if record['device_type'] == "cisco_ios":
-            GlobalConfig.HIGH_QUEUE.enqueue(__record_switch_info, args=(record,), description=f"Record Switch Info {ip}")
+            GlobalConfig.HIGH_QUEUE.enqueue(__record_switch_details, args=(record,),
+                                            description=f"Record Switch Info {ip}")
+        # if record['device_type'] == "linux":
+        #     GlobalConfig.HIGH_QUEUE.enqueue(__record_linux_details, args=(record,),
+        #                                     description=f"Record Linux Details {ip}")
+
 
 def __record_nmap_info(record):
 
@@ -69,33 +82,23 @@ def __record_nmap_info(record):
     NMAP_INDEX.add_document(scan_info)
     LOG_INDEX.generate_log(message=f"nmap scanned device {record['ip']}", process="record_nmap_info")
 
-def __record_switch_info(record):
+
+def __record_switch_details(record):
     """ record the device information after the ping check returns true
        ----------
             record:dict
                record after record device info is run
-            credentials_file: str
-                path to credentials file
-            logger: models.ESLogger
-                elasticsearch logger index
        """
-    credential = load_credential(record['credential'], GlobalConfig.CREDENTIALS)
 
-    device_info = {
-        'device_type': record['device_type'],
-        'ip': record['ip'],
-        'username': credential['username'],
-        'password': credential['password'],
-        'secret': credential['secret'],
-        'hostname': record['hostname'],
-    }
+    switch = load.load_device(record)
 
     try:
-        switch = SwitchCLI(**device_info)
+        switch.retrive_config()
         switch.retrieve_vlans()
+        switch.parse_interfaces()
     except Exception as e:
         LOG_INDEX.generate_log(message=f"failed to pull infor for {record['hostname']} due to {e}",
-                                            process="record_switch_info",
+                                            process="record_switch_details",
                                             level=3)
         return
 
@@ -103,20 +106,26 @@ def __record_switch_info(record):
         vlan['hostname'] = switch.hostname
         VLAN_INDEX.add_document(vlan)
 
-    LOG_INDEX.generate_log(message=f"config info for {record['hostname']} pulled", process="record_switch_info")
+    for interface in switch.interfaces:
+        interface['hostname'] = switch.hostname
+        INTERFACE_INDEX.add_document(interface)
 
-def load_credential(id, credentials_file):
-    """ credential loader for all device types
+    LOG_INDEX.generate_log(message=f"Config info for {record['hostname']} pulled", process="record_switch_details")
+
+
+def __record_linux_details(record):
+    """ record the device information after the ping check returns true
        ----------
-            id:int
-               id of the credentials
-            credentials_file: str
-                path to credentials file
+            record:dict
+               record after record device info is run
        """
 
-    with open(credentials_file, "r") as file:
-        credentials = yaml.full_load(file)
+    details = discover.discover_linux_details(record)
 
-    for c in credentials:
-        if int(int(id)) == int(c['id']):
-            return c
+    if details:
+        details['hostname'] = record['hostname']
+        EP_DETAILS_INDEX.add_document(details)
+        LOG_INDEX.generate_log(message=f"Linux details recorded for {record['hostname']}", process="__record_linux_details")
+    else:
+        LOG_INDEX.generate_log(message=f"Unable to determine linux details recorded for {record['hostname']}",
+                               process="__record_linux_details")

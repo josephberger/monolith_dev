@@ -39,7 +39,7 @@ def __update_device_info(ip,record_id):
             record_id: str
                 elasticsearch _id value
 
-       """
+        """
 
     record = discover.discover_device_info(ip, GlobalConfig.CREDENTIALS)
     record['update_time'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

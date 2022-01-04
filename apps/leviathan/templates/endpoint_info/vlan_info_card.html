@@ -1,0 +1,29 @@
+<div class="center-body-card">
+    <button type="button" title="Expand Task List" class="collapsible">VLAN Information</button>
+    <div class="content">
+        <div class="button-container">
+            <button class="select" title="Update Scan Info" type="submit" name="update_vlan" value="update_vlan">
+                 <img src="/static/discover.png" style="width:30px;height:30px;">
+            </button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Number</th>
+                <th>Name</th>
+            </thead>
+            <tbody>
+
+            {% for d in data %}
+
+            <tr>
+                <td>{{ d }}</td>
+                <td>{{ data[d].name }}</td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>

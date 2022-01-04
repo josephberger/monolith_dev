@@ -23,6 +23,8 @@ class ElasticConfig(object):
     ENDPOINT_INDEX = "test"
     NMAP_INDEX = "nmap"
     VLAN_INDEX = "vlans"
+    INTERFACE_INDEX = "interfaces"
+    EP_DETAILS_INDEX = "ep_details"
 
 class LogConfig(object):
     ES_HOST = "localhost"
@@ -35,7 +37,6 @@ class GlobalConfig(object):
     REDIS_CONNECTION = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
     HIGH_QUEUE = Queue(connection=REDIS_CONNECTION, name="high")
     DEFAULT_QUEUE = Queue(connection=REDIS_CONNECTION, name="default")
-    FINISHED_QUEUE = FinishedJobRegistry(connection=REDIS_CONNECTION, name="default")
 
     CREDENTIALS = os.path.join('.credentials.yaml')
 

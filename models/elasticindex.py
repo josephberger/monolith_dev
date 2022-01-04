@@ -97,6 +97,13 @@ class ElasticIndex():
         except Exception:
             pass
 
+    def remove_document_by_id(self, doc_id):
+
+        try:
+            self.es.delete(index=self.index, doc_type="_doc", id=doc_id)
+        except Exception:
+            pass
+
     def update_document(self,record_id,updates):
 
         body={"doc": updates}
@@ -151,5 +158,5 @@ class ElasticIndex():
             response = self.es.search(index=self.index, body=search_param)
             return response
 
-        except elasticsearch.exceptions.RequestError:
-            raise ElasticIndexError(f"Query '{search}' contains invalid syntax.")
+        except elasticsearch.exceptions.RequestError as e:
+            raise ElasticIndexError(e)

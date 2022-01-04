@@ -1,0 +1,39 @@
+<div class="center-body-card" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <button type="button" title="Expand Task List" class="collapsible">Inteface Information</button>
+    <div class="content">
+        <div class="button-container">
+            <button class="select" title="Update Scan Info" type="submit" name="update_interfaces" value="update_interfaces">
+                 <img src="/static/discover.png" style="width:30px;height:30px;">
+            </button>
+        </div>
+            <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mode</th>
+                <th>Description</th>
+                <th>IP Addresses</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for d in data %}
+            <tr>
+                <td>{{ d }}</td>
+                <td>{{ data[d].mode }}</td>
+                <td>{{ data[d].description }}</td>
+                {% if 'addresses' in data[d] %}
+                <td>
+                    {% for key, value in data[d].addresses.items() %}
+                    {{key}} : {{value}} <br>
+                    {% endfor %}
+                </td>
+                {% else %}
+                <td></td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -2,11 +2,17 @@ import os
 import platform
 from socket import gethostbyaddr, herror
 from datetime import datetime
+import re
+
 
 import yaml
 from netmiko import SSHDetect
 import nmap
 import pytz
+
+from config import GlobalConfig
+from ctrl.load import load_device
+CREDENTIALS = GlobalConfig.CREDENTIALS
 
 def discover_ping_check(ip):
     """ Pings the IP given and if a response is found, add to redis queue
@@ -60,7 +66,7 @@ def discover_device_info(ip, credentials_file):
     }
 
     #open the credential file
-    with open(credentials_file, "r") as file:
+    with open(CREDENTIALS, "r") as file:
         credentials = yaml.full_load(file)
 
     #for each credential, loop and try until success
@@ -135,4 +141,36 @@ def discover_nmap_info(ip, hostname=None):
     scan_info['hostname'] = hostname
 
     return scan_info
+
+def discover_linux_details(record):
+    """ discovers linux details (similar to switch details)
+
+    Parameters
+    ----------
+        record:dict
+            record of the device
+    """
+
+    connection = load_device(record)
+
+    regex_info = re.findall(r"Distributor ID:.*?(.*?)\nDescription:.*?(.*?)\nRelease:.*?(.*?)\nCodename:.*?(.*)",
+                             connection.send_command("lsb_release -a"))
+
+    if len(regex_info) == 1:
+        if len(regex_info[0]) == 1:
+
+            distro_info = {
+                "type": "linux",
+                "distributor_id":regex_info[0][0].replace("\t","") ,
+                "description":regex_info[0][1].replace("\t","") ,
+                "release":regex_info[0][2].replace("\t","") ,
+                "codename":regex_info[0][3].replace("\t","") ,
+            }
+
+            return distro_info
+
+    else:
+
+        return None
+
 

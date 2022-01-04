@@ -13,11 +13,22 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from flask import Flask
+from flask import Flask, url_for, render_template
 from config import Config
+from flask_restx import Api, Resource, Namespace
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config["PROPAGATE_EXCEPTIONS"] = False
+app.config['ERROR_404_HELP'] = False
+
+@app.route('/')
+@app.route('/index')
+def index():
+
+    return render_template('index.html')
+
+api = Api(app, doc='/docs')
 
 from ..leviathan import routes
 from .utils import filters

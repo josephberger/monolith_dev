@@ -7,13 +7,16 @@
     <div class="center-body-card">
         <div class="table-information">Information</div>
         <div class="button-container">
+            <button class="select" title="Delete" type="submit" name="delete_endpoint" value="delete_endpoint">
+                 <img src="/static/delete.png" style="width:30px;height:30px;">
+            </button>
             <button class="select" title="Re-Discover" type="submit" name="rediscover" value="rediscover">
                  <img src="/static/discover.png" style="width:30px;height:30px;">
             </button>
         </div>
 
         {% set data = device.info %}
-        {% include "device_info/endpoint_info_card.html" %}
+        {% include "endpoint_info/endpoint_info_card.html" %}
 
     </div>
 
@@ -21,8 +24,19 @@
 
     {% if device.nmap_info %}
         {% set data = device.nmap_info %}
-        {% include "device_info/nmap_info_card.html" %}
+        {% include "endpoint_info/nmap_info_card.html" %}
     {%endif %}
+
+    {% if device.vlan_info %}
+        {% set data = device.vlan_info %}
+        {% include "endpoint_info/vlan_info_card.html" %}
+    {%endif %}
+
+    {% if device.interface_info %}
+        {% set data = device.interface_info %}
+        {% include "endpoint_info/interface_info_card.html" %}
+    {%endif %}
+
 
 <script>
     var coll = document.getElementsByClassName("collapsible");
