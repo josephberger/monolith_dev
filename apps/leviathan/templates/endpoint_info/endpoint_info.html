@@ -27,14 +27,27 @@
         {% include "endpoint_info/nmap_info_card.html" %}
     {%endif %}
 
-    {% if device.vlan_info %}
-        {% set data = device.vlan_info %}
-        {% include "endpoint_info/vlan_info_card.html" %}
+    {% if device.info.device_type == 'cisco_ios' %}
+        {% if device.vlan_info %}
+            {% set data = device.vlan_info %}
+            {% include "endpoint_info/cisco_ios/vlan_info_card.html" %}
+        {%endif %}
+
+        {% if device.interface_info %}
+            {% set data = device.interface_info %}
+            {% include "endpoint_info/cisco_ios/interface_info_card.html" %}
+        {%endif %}
     {%endif %}
 
-    {% if device.interface_info %}
-        {% set data = device.interface_info %}
-        {% include "endpoint_info/interface_info_card.html" %}
+    {% if device.info.device_type == 'paloalto_panos' %}
+        {% if device.interface_info %}
+            {% set data = device.interface_info %}
+            {% include "endpoint_info/paloalto_panos/interface_info_card.html" %}
+        {%endif %}
+        {% if device.gateway_info %}
+            {% set data = device.gateway_info %}
+            {% include "endpoint_info/paloalto_panos/gateway_info_card.html" %}
+        {%endif %}
     {%endif %}
 
 

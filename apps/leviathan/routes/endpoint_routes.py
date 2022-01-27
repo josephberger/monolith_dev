@@ -1,13 +1,11 @@
 from flask import render_template, request, redirect, url_for, flash
-from flask_restx import Resource, abort
+from flask_restx import Resource
 from http import HTTPStatus
-import ctrl
 from ..models import NotFoundError
 from apps.leviathan import app, api
 from apps.leviathan.forms import SwitchSearch, Generic
-from config import GlobalConfig
-from tasks.rediscover import rediscover_device_info, rediscover_nmap_info
-from tasks.remove import remove_endpoint_info
+
+from apps.leviathan import retrieve, taskmgr
 
 
 @app.route('/endpoint_search', methods=['POST','GET'])
@@ -17,10 +15,10 @@ def endpoint_search():
     form = SwitchSearch()
     device_query = None
 
-    #if a query string exists, query.
+    #if a query string exists, query
     if request.args.get("query"):
         query = request.args.get("query")
-        device_query = ctrl.retrieve.reteive_endpoint_info_query(query)
+        device_query = retrieve.endpoint_info_query(query)
 
     if form.is_submitted():
 
@@ -43,24 +41,41 @@ def endpoint_info(hostname=None):
     if hostname:
 
         hostname = hostname.replace('"','')
-        device = ctrl.reteive_endpoint_all(hostname)
+        device = retrieve.endpoint_all(hostname)
 
     if form.is_submitted():
 
+        msg = "no conditions met"
+        wait_time = 5000
+
         if request.form.get("rediscover"):
-            job = GlobalConfig.DEFAULT_QUEUE.enqueue(rediscover_device_info.run, device['info'], description=f"Rediscover {device['info']['ip']}")
-            flash(f"Rediscovering device at ip:{device['info']['ip']}.  Task ID:{job.id}","information")
-            return redirect(url_for("endpoint_search"))
+            job = taskmgr.rediscover_device_info(device['info'])
+            msg = f"Rediscovering device at ip:{device['info']['ip']}.  Task ID:{job.id}"
+            wait_time = 5000
 
-        if request.form.get("update_nmap"):
-            job = GlobalConfig.HIGH_QUEUE.enqueue(rediscover_nmap_info.run, device['info'], description=f"Re-NMAP {device['info']['ip']}")
-            flash(f"Updating scan info for ip:{device['info']['ip']}.  Task ID:{job.id}","information", )
-            return redirect(url_for("endpoint_search"))
+        elif request.form.get("update_nmap"):
+            job = taskmgr.rediscover_nmap_info(device['info'])
+            msg = f"Updating scan info for ip:{device['info']['ip']}.  Task ID:{job.id}"
+            wait_time = 10000
 
-        if request.form.get("delete_endpoint"):
-            job = GlobalConfig.HIGH_QUEUE.enqueue(remove_endpoint_info.run, device['info'], description=f"Delete {device['info']['ip']}")
+        elif request.form.get("update_vlan"):
+            job = taskmgr.rediscover_vlan_info(device['info'])
+            msg = f"Updating vlan info for ip:{device['info']['ip']}.  Task ID:{job.id}"
+            wait_time = 5000
+
+        elif request.form.get("update_interfaces"):
+            job = taskmgr.rediscover_interface_info(device['info'])
+            msg = f"Updating interfaces info for ip:{device['info']['ip']}.  Task ID:{job.id}"
+            wait_time = 10000
+
+        elif request.form.get("delete_endpoint"):
+            job = taskmgr.remove_endpoint_info(device['info'])
             flash(f"Deleting information for:{device['info']['ip']}.  Task ID:{job.id}","information")
             return redirect(url_for("endpoint_search"))
+
+        return render_template('message/message.html', title="Message",
+                               message=msg,
+                               redirect_url=request.url, wait_time=wait_time)
 
     if device:
         title = f'Endpoint Info - {hostname}'
@@ -77,7 +92,7 @@ class api_endpoint_info(Resource):
     @api.response(HTTPStatus.NOT_FOUND.value, "Endpoint doesn't exist")
     def get(self, hostname):
 
-        endpoint = ctrl.reteive_endpoint_all(hostname.replace('"', ''))
+        endpoint = retrieve.endpoint_all(hostname.replace('"', ''))
 
         if endpoint:
             return endpoint
@@ -88,11 +103,10 @@ class api_endpoint_info(Resource):
     @api.response(HTTPStatus.NOT_FOUND.value, "Endpoint doesn't exist")
     def delete(self, hostname):
 
-        endpoint = ctrl.reteive_endpoint_info(hostname)
+        endpoint = retrieve.endpoint_info(hostname)
 
         if endpoint:
-            job = GlobalConfig.HIGH_QUEUE.enqueue(remove_endpoint_info.run, endpoint,
-                                                  description=f"Delete {endpoint['ip']}")
+            job = taskmgr.remove_endpoint_info(endpoint)
 
             return {"message":f"Removing endpoint {hostname}",
                     "job_id": job.id}
@@ -103,14 +117,11 @@ class api_endpoint_info(Resource):
 @api.route('/api/endpoint_search/<query>')
 class api_endpoint_info(Resource):
     @api.response(HTTPStatus.OK.value, "Get endpoint list that matches query")
-    #@api.response(HTTPStatus.NOT_FOUND.value, "Endpoint doesn't exist")
     def get(self, query):
 
-        endpoint_query = ctrl.retrieve.reteive_endpoint_info_query(query)
+        endpoint_query = retrieve.endpoint_info_query(query)
 
         if endpoint_query:
             reseponse = {}
             reseponse['data'] = endpoint_query['data']
             return reseponse
-
-        #raise NotFoundError(message=f"Endpoint '{hostname}' doesn't exist")

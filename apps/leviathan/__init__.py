@@ -13,9 +13,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-from flask import Flask, url_for, render_template
+from flask import Flask, render_template
+from flask_restx import Api
+
 from config import Config
-from flask_restx import Api, Resource, Namespace
+from ctrl import Retrieve, TaskMgr
+
+retrieve = Retrieve(Config)
+taskmgr = TaskMgr(Config)
 
 app = Flask(__name__)
 app.config.from_object(Config)

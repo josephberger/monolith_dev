@@ -168,7 +168,8 @@ class SwitchCLI:
                 line = "!"
             self.line_config.append(line)
 
-
+    def retrieve_interfaces(self):
+        self.parse_interfaces()
     def parse_interfaces(self):
         """ parses the self.config variable for interfaces, determines config for each
         then places them as a list of dictionaries in self.interfaces

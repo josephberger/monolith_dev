@@ -1,0 +1,31 @@
+<div class="center-body-card" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <button type="button" title="Expand Task List" class="collapsible">Gateway Information</button>
+    <div class="content">
+        <div class="button-container">
+            <button class="select" title="Update GW Info" type="submit" name="update_gw_info" value="update_gw_info">
+                 <img src="/static/discover.png" style="width:30px;height:30px;">
+            </button>
+        </div>
+            <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>encap-interface</th>
+                <th>local-address-ip</th>
+                <th>tunnel-interface</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for d in data %}
+            <tr>
+                <td>{{ d }}</td>
+                <td>{{ data[d]['encap-interface'] }}</td>
+                <td>{{ data[d]['local-address-ip'] }}</td>
+                <td>{{ data[d]['tunnel-interface'] }}</td>
+            {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

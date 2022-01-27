@@ -4,9 +4,8 @@ from flask import render_template, send_file, request
 
 from apps.leviathan import app
 from apps.leviathan.forms import Generic
-from config import GlobalConfig
-from ctrl.retrieve import retrieve_jobs_all
 
+from apps.leviathan import retrieve, taskmgr
 
 @app.route('/tasks', methods=['POST','GET'])
 def tasks():
@@ -17,14 +16,14 @@ def tasks():
 
     high_tasks = {"headers": ["description", "started_at", "finished_at","enqueued_at", "status"],
                  "data_keys": ["description","started_at", "finished_at","enqueued_at", "status"],
-                 "data": retrieve_jobs_all(GlobalConfig.HIGH_QUEUE)}
+                 "data": retrieve.jobs_all(queue_name="high")}
 
 
     task_info['High Tasks'] = high_tasks
 
     default_tasks = {"headers": ["description","started_at", "finished_at","enqueued_at", "status"],
                  "data_keys": ["description","started_at", "finished_at","enqueued_at", "status"],
-                 "data": retrieve_jobs_all(GlobalConfig.DEFAULT_QUEUE)}
+                 "data": retrieve.jobs_all(queue_name="default")}
 
 
     task_info['Default Tasks'] = default_tasks

@@ -1,13 +1,17 @@
-from config import ElasticConfig
+from config import Config
 from models import ElasticIndex
+from config import Config
 
-index_list = [ElasticConfig.ENDPOINT_INDEX,
-              ElasticConfig.NMAP_INDEX,
-              ElasticConfig.VLAN_INDEX,
-              ElasticConfig.EP_DETAILS_INDEX,
-              ElasticConfig.INTERFACE_INDEX]
+appconfig = Config
+
+index_list = [appconfig.ENDPOINT_INDEX,
+              appconfig.NMAP_INDEX,
+              appconfig.VLAN_INDEX,
+              appconfig.EP_DETAILS_INDEX,
+              appconfig.INTERFACE_INDEX,
+              appconfig.GATEWAY_INDEX]
 
 for index_name in index_list:
-    index = ElasticIndex(index_name, host=ElasticConfig.HOST, port=ElasticConfig.PORT)
+    index = ElasticIndex(index_name, host=appconfig.ELASTIC_HOST, port=appconfig.ELASTIC_PORT)
     index.delete()
     index.build()

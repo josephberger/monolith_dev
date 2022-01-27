@@ -14,6 +14,7 @@
 #
 
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk, scan
 import elasticsearch.exceptions
 import json
 import requests
