@@ -12,8 +12,10 @@ class Retrieve:
         self.interface_index = appconfig.INTERFACE_INDEX
         self.vlan_index = appconfig.VLAN_INDEX
         self.gateway_index = appconfig.GATEWAY_INDEX
+        self.zone_index = appconfig.ZONE_INDEX
         self.redis_host = appconfig.REDIS_HOST
         self.redis_port = appconfig.REDIS_PORT
+        self.nmap_enabled = appconfig.NMAP_ENABLED
     def endpoint_info_query(self, query):
 
         index = ElasticIndex(self.endpoint_index, host=self.elastic_host, port=self.elastic_port)
@@ -32,6 +34,34 @@ class Retrieve:
         else:
             return None
 
+    def nmap_info_query(self, query):
+
+        index = ElasticIndex(self.nmap_index, host=self.elastic_host, port=self.elastic_port)
+        elastic_hits = index.lquery(query, exact_match=False)
+
+        if len(elastic_hits['hits']['hits']) > 0:
+            hits = []
+            for eh in elastic_hits['hits']['hits']:
+                hits.append(eh['_source'])
+
+            return hits
+        else:
+            return None
+
+    def vlan_info_query(self, query):
+
+        index = ElasticIndex(self.vlan_index, host=self.elastic_host, port=self.elastic_port)
+        elastic_hits = index.lquery(query, exact_match=False)
+
+        if len(elastic_hits['hits']['hits']) > 0:
+            hits = []
+            for eh in elastic_hits['hits']['hits']:
+                hits.append(eh['_source'])
+
+            return hits
+        else:
+            return None
+
     def endpoint_all(self, hostname):
 
         info = self.endpoint_info(hostname)
@@ -42,9 +72,14 @@ class Retrieve:
         else:
             return None
 
-        nmap_info = self.nmap_info(hostname)
-        if nmap_info:
-            device['nmap_info'] = nmap_info
+        if self.nmap_enabled:
+            nmap_info = self.nmap_info(device['info']['_id'])
+            if nmap_info:
+                device['nmap_info'] = nmap_info
+
+        details = self.detail_info(device['info']['_id'])
+        if details:
+            device['details'] = details
 
         vlan_info = self.vlan_info(hostname)
         if vlan_info:
@@ -57,6 +92,10 @@ class Retrieve:
         gateway_info = self.gateway_info(hostname)
         if gateway_info:
             device['gateway_info'] = gateway_info
+
+        zone_info = self.zone_info(hostname)
+        if zone_info:
+            device['zone_info'] = zone_info
 
         return device
 
@@ -79,28 +118,39 @@ class Retrieve:
 
         return info
 
-    def nmap_info(self, hostname):
+    def nmap_info(self, endpoint_id):
 
         index = ElasticIndex(self.nmap_index, host=self.elastic_host, port=self.elastic_port)
 
         try:
-            elastic_hits = index.query(hostname, field="hostname", sort_field="@timestamp", sort_order="desc")
+            elastic_hits = index.query(endpoint_id, field="endpoint_id", sort_field="@timestamp", sort_order="desc")
         except:
             return None
 
         if elastic_hits['hits']['total']['value'] == 0:
             return None
 
-        nmap_info = None
-
-        for eh in elastic_hits['hits']['hits']:
-
-            if eh["_source"]['hostname'] == hostname.replace('"', ''):
-                nmap_info = eh["_source"]
-                nmap_info['_id'] = eh['_id']
-                break
+        nmap_info = elastic_hits['hits']['hits'][0]["_source"]
+        nmap_info['_id'] = elastic_hits['hits']['hits'][0]['_id']
 
         return nmap_info
+
+    def detail_info(self, endpoint_id):
+
+        index = ElasticIndex("ep_details", host=self.elastic_host, port=self.elastic_port)
+
+        try:
+            elastic_hits = index.query(endpoint_id, field="endpoint_id")
+        except:
+            return None
+
+        if elastic_hits['hits']['total']['value'] == 0:
+            return None
+
+        details = elastic_hits['hits']['hits'][0]["_source"]
+        details['_id'] = elastic_hits['hits']['hits'][0]['_id']
+
+        return details
 
 
     def interface_info(self, hostname):
@@ -166,6 +216,25 @@ class Retrieve:
                 gw_info[name] = gw
 
         return gw_info
+
+    def zone_info(self, hostname):
+        index = ElasticIndex(self.zone_index, host=self.elastic_host, port=self.elastic_port)
+        elastic_hits = index.query(hostname, field="hostname")
+
+        if elastic_hits['hits']['total']['value'] == 0:
+            return None
+
+        zone_info = {}
+
+        for eh in elastic_hits['hits']['hits']:
+
+            if eh["_source"]['hostname'] == hostname.replace('"', ''):
+                z = eh["_source"]
+                z['_id'] = eh['_id']
+                name = z['name']
+                zone_info[name] = z
+
+        return zone_info
 
     def jobs_all(self, queue_name):
 

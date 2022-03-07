@@ -34,7 +34,7 @@ class ExportCSV(FlaskForm):
 class System(FlaskForm):
     elastic = SubmitField('Elastic Connection')
 
-class SwitchSearch(FlaskForm):
+class Search(FlaskForm):
     searchbar = StringField("Search")
     submit = SubmitField("Submit")
     export = SubmitField('Export')

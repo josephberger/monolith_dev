@@ -1,0 +1,37 @@
+
+        <table>
+            <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>TCP Port</th>
+                <th>State</th>
+                <th>Reason</th>
+                <th>Name</th>
+                <th>Product</th>
+                <th>Extra Info</th>
+                <th>CPE</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for d in data %}
+            <tr>
+                <td>{{ d['hostname'] }}</td>
+                {% if d.scan|length > 0 %}
+                {%for key in d.scan.tcp %}
+            </tr>
+            <tr>
+                    <td></td>
+                    <td>{{ key }}</td>
+                    <td>{{ d.scan.tcp[key].state }}</td>
+                    <td>{{ d.scan.tcp[key].reason }}</td>
+                    <td>{{ d.scan.tcp[key].name }}</td>
+                    <td>{{ d.scan.tcp[key].product }}</td>
+                    <td>{{ d.scan.tcp[key].extrainfo }}</td>
+                    <td>{{ d.scan.tcp[key].cpe }}</td>
+
+                {% endfor %}
+                {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>

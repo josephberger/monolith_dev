@@ -20,11 +20,25 @@
 
     </div>
 
-    {% if device.nmap_info %}
-        {% set data = device.nmap_info %}
-        {% include "endpoint_info/nmap_info_card.html" %}
-    {%endif %}
 
+
+        {% if device.nmap_info %}
+            {% set data = device.nmap_info %}
+            {% include "endpoint_info/nmap_info_card.html" %}
+        {%endif %}
+
+        {% if device.interface_info %}
+            {% set data = device.interface_info %}
+            {% include "endpoint_info/paloalto_panos/interface_info_card.html" %}
+        {%endif %}
+        {% if device.gateway_info %}
+            {% set data = device.gateway_info %}
+            {% include "endpoint_info/paloalto_panos/gateway_info_card.html" %}
+        {%endif %}
+            {% if device.zone_info %}
+            {% set data = device.zone_info %}
+            {% include "endpoint_info/paloalto_panos/zone_info_card.html" %}
+        {%endif %}
     {%endif %}
 
 <script>

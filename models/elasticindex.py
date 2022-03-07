@@ -89,7 +89,9 @@ class ElasticIndex():
 
     def add_document(self, data):
 
-        self.es.index(index=self.index, ignore=400, doc_type='_doc', body=json.loads(json.dumps(data)))
+        doc = self.es.index(index=self.index, ignore=400, doc_type='_doc', body=json.loads(json.dumps(data)))
+        data['_id'] = doc['_id']
+        return data
 
     def remove_document(self, doc):
 

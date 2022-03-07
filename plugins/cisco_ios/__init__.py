@@ -1,7 +1,23 @@
+#
+# Joseph Berger <airmanberger@gmail.com>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+
 import logging
 from models import ElasticIndex
 from models import SwitchCLI
 import yaml
+import re
 
 def record_details(record, appconfig):
     """ record the device information after the ping check returns true
@@ -31,13 +47,29 @@ def record_details(record, appconfig):
     index = ElasticIndex(vlan_index, host=elastic_host, port=elastic_port)
     for vlan in device.vlans:
         vlan['hostname'] = device.hostname
+        vlan['endpoint_id'] = record['_id']
         index.add_document(vlan)
 
     # set interface index and record
     index = ElasticIndex(interface_index, host=elastic_host, port=elastic_port)
     for interface in device.interfaces:
         interface['hostname'] = device.hostname
+        interface['endpoint_id'] = record['_id']
         index.add_document(interface)
+
+    # get the endpoint system details
+    version = device.cli.send_command("show version")
+    endpoint_details = {}
+    matches = re.findall(r"(.+?)(\s+?:|\:\s+)(.+?)\n", version)
+    for m in matches:
+        if len(m) == 3:
+            key = m[0].lstrip().rstrip().lower().replace(" ", "_")
+            value = m[2].lstrip().rstrip().lower().replace(" ", "_")
+            endpoint_details[key] = value
+    endpoint_details['hostname'] = device.hostname
+    endpoint_details['endpoint_id'] = record['_id']
+    index = ElasticIndex('ep_details', elastic_host, elastic_port)
+    index.add_document(endpoint_details)
 
     logging.info(f"details for {device.hostname} pulled")
 
@@ -62,6 +94,7 @@ def rediscover_interface_info(record, appconfig):
 
     # variables extracted from record]
     hostname = record['hostname']
+    endpoint_id = record['_id']
 
     # if interfaces pulled successfully, continue
     try:
@@ -81,7 +114,8 @@ def rediscover_interface_info(record, appconfig):
 
     # set interface index and record
     for interface in device.interfaces:
-        interface['hostname'] = device.hostname
+        interface['hostname'] = hostname
+        interface['endpoint_id'] = endpoint_id
         index.add_document(interface)
 
     logging.info(f"updated interfaces for endpoint {hostname}")
@@ -107,6 +141,7 @@ def rediscover_vlan_info(record, appconfig):
 
     #variables extracted from record]
     hostname = record['hostname']
+    endpoint_id = record['_id']
 
     # if vlans pulled successfully, continue
     try:
@@ -126,7 +161,8 @@ def rediscover_vlan_info(record, appconfig):
 
     # set vlan index and record
     for vlan in device.vlans:
-        vlan['hostname'] = device.hostname
+        vlan['endpoint_id'] = endpoint_id
+        vlan['hostname'] = hostname
         index.add_document(vlan)
 
     logging.info(f"updated vlans for endpoint {hostname}")

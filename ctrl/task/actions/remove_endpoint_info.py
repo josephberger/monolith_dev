@@ -14,11 +14,12 @@ def run(record, appconfig):
     # elastic configuration
     elastic_host = appconfig.ELASTIC_HOST
     elastic_port = appconfig.ELASTIC_PORT
-    endpoint_index = appconfig.NMAP_INDEX
+    endpoint_index = appconfig.ENDPOINT_INDEX
     nmap_index = appconfig.NMAP_INDEX
     vlan_index = appconfig.VLAN_INDEX
     interface_index = appconfig.INTERFACE_INDEX
-    gateway_index = appconfig.NMAP_INDEX
+    gateway_index = appconfig.GATEWAY_INDEX
+    zone_index = appconfig.ZONE_INDEX
 
     #get local variables from the record dictionary
     hostname = record['hostname']
@@ -30,7 +31,7 @@ def run(record, appconfig):
     logging.info(f"deleted {hostname} endpoint information")
 
     #create index list for enumaration
-    index_list = [nmap_index,vlan_index,interface_index,gateway_index]
+    index_list = [nmap_index,vlan_index,interface_index,gateway_index, zone_index]
 
     total_removed = 0
 

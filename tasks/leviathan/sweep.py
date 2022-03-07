@@ -1,10 +1,24 @@
+#
+# Joseph Berger <airmanberger@gmail.com>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+
 from datetime import datetime
 import logging
 
 from models import ElasticIndex
 from redis import Redis
 from rq import Queue
-from decouple import config as envconf
 from config import Config
 from ctrl import Discover
 
@@ -30,10 +44,10 @@ nmap_index = appconfig.NMAP_INDEX
 
 def run(ip):
     """ initial run method for the entire task
-       ----------
-           ip:str
-               ip address of target device
-       """
+   ----------
+       ip:str
+           ip address of target device
+   """
 
     queue = Queue(connection=redis_connection, name="high")
 
@@ -47,7 +61,7 @@ def __record_device_info(ip):
     """ record the device information after the ping check returns true
        ----------
             ip:str
-               ip address of target device
+               ip address of target device#TODO make this explicit instead of implicit
        """
 
     index = ElasticIndex(endpoint_index,host=elastic_host, port=elastic_port)
@@ -57,10 +71,11 @@ def __record_device_info(ip):
     record['update_time'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     #record device in elasticsearch device index
-    index.add_document(record)
+    record = index.add_document(record)
 
     #add the nmap scan to the high queue
-    queue.enqueue(__record_nmap_info, args=(record,), description=f"Record NMAP Info {ip}")
+    if appconfig.NMAP_ENABLED:
+        queue.enqueue(__record_nmap_info, args=(record,), description=f"Record NMAP Info {ip}")
 
     if record['device_type'] == "unknown":
         logging.info(f"unable to determine credentials and device_type for {ip}")
@@ -82,6 +97,6 @@ def __record_nmap_info(record):
     index = ElasticIndex(nmap_index, host=elastic_host, port=elastic_port)
 
     scan_info = discover.nmap_info(record['ip'],record['hostname'])
-
+    scan_info['endpoint_id'] = record['_id']
     index.add_document(scan_info)
     logging.info("nmap scanned device {record['ip']}")

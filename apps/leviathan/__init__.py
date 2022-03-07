@@ -19,6 +19,7 @@ from flask_restx import Api
 from config import Config
 from ctrl import Retrieve, TaskMgr
 
+plugin_mods = Config.PLUGIN_MODS
 retrieve = Retrieve(Config)
 taskmgr = TaskMgr(Config)
 

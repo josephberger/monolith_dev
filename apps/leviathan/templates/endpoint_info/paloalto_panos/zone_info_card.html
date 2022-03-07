@@ -1,0 +1,22 @@
+<div class="center-body-card" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <button type="button" title="Expand Task List" class="collapsible">Zone Information</button>
+    <div class="content">
+        <div class="button-container">
+        </div>
+            <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for d in data %}
+            <tr>
+                <td>{{ d }}</td>
+            {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

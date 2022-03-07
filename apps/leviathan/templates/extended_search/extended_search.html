@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="title-bar">
+         <div class="alignleft"><h2>{{ title }}</h2></div>
+         <div class="aligncenter">
+           <input class="search-input" id="searchbar" name="searchbar" type="text" value="">
+             <select name="query_type" method="GET" action="/">
+                <option value="vlan">vlan</option>
+                <option value="interfaces">interfaces</option>
+            </select>
+            <button class="select" title="Submit Query" type="submit" name="submit" value="submit">
+                Search
+            </button>
+         </div>
+         <div class="alignright"></div>
+    </div>
+
+    {% if search_query %}
+        {% if search_query|length > 0 %}
+
+        <hr style="width75%">
+        <div class="center-body-card">
+            <div class="table-information">{{ search_query|length }} Search Results</div>
+            <div class="button-container">
+                <button class="select" title="Export CSV" type="submit" name="export_csv" value="{{key}}">
+                     <img src="static/download.png" style="width:30px;height:30px;">
+                </button>
+            </div>
+            {% set data = search_query %}
+            {% if query_type == 'vlan' %}
+            {% include "extended_search/vlan_search_card.html" %}
+            {% endif %}
+        </div>
+        {%endif %}
+    {%endif %}
+{% endblock %}

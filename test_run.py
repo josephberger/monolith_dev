@@ -15,7 +15,12 @@ high_queue = Queue(connection=redis_connection, name="high")
 default_queue = Queue(connection=redis_connection, name="default")
 
 
-for ip in ipaddress.IPv4Network("172.31.10.232/32"):
+for ip in ipaddress.IPv4Network("172.31.5.0/24"):
+    result = default_queue.enqueue(sweep.run,
+                                   args=(str(ip),),
+                                   description=f'Sweep {str(ip)}')
+
+for ip in ipaddress.IPv4Network("172.31.10.0/24"):
     result = default_queue.enqueue(sweep.run,
                                    args=(str(ip),),
                                    description=f'Sweep {str(ip)}')

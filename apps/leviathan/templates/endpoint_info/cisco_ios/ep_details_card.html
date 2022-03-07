@@ -1,0 +1,10 @@
+<div class="center-body-card">
+    <button type="button" title="Expand Task List" class="collapsible">Endpoint Details</button>
+    <div class="content">
+        <div class="button-container">
+        </div>
+        {%for key in data %}
+        {{ key }} : {{ data[key] }} <br>
+        {% endfor %}
+    </div>
+</div>

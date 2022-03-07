@@ -20,11 +20,26 @@
 
     </div>
 
+    {%endif %}
+
+    {% if device.details %}
+        {% set data = device.details %}
+        {% include "endpoint_info/cisco_ios/ep_details_card.html" %}
+    {%endif %}
+
     {% if device.nmap_info %}
         {% set data = device.nmap_info %}
         {% include "endpoint_info/nmap_info_card.html" %}
     {%endif %}
 
+    {% if device.vlan_info %}
+        {% set data = device.vlan_info %}
+        {% include "endpoint_info/cisco_ios/vlan_info_card.html" %}
+    {%endif %}
+
+    {% if device.interface_info %}
+        {% set data = device.interface_info %}
+        {% include "endpoint_info/cisco_ios/interface_info_card.html" %}
     {%endif %}
 
 <script>
