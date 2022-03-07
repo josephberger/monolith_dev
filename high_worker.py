@@ -1,8 +1,15 @@
 from redis import Redis
 from rq import Worker, Queue, Connection
 
-listen = ['default']
-redis_connection = Redis(host='172.31.10.203', port=6379, db=0)
+from config import Config
+
+appconfig = Config()
+
+redis_host = appconfig.REDIS_HOST
+redis_port = appconfig.REDIS_PORT
+redis_connection = Redis(host=redis_host, port=redis_port, db=0)
+
+listen = ['high']
 
 if __name__ == '__main__':
 

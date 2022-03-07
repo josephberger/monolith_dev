@@ -1,0 +1,66 @@
+version: '2'
+
+services:
+
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    volumes:
+       - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - node.name=es-node01
+      - discovery.type=single-node
+    networks:
+      - monolith
+
+  logstash:
+    image: logstash:7.17.1
+    volumes:
+      # - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipelines:/usr/share/logstash/pipelines:ro
+      - ./logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+    ports:
+      - "5044:5044"
+    networks:
+      - monolith
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+  kibana:
+    image: kibana:7.17.0
+    ports:
+      - "5601:5601"
+    networks:
+      - monolith
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - monolith
+
+  filebeat:
+    image: jberger87/filebeat:latest
+    ports:
+      - 9002:9002:udp
+    networks:
+      - monolith
+    links:
+      - logstash
+
+networks:
+  monolith:
+    driver: bridge
+
+volumes:
+  esdata:
+    driver: local
