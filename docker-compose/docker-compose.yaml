@@ -51,7 +51,7 @@ services:
   filebeat:
     image: jberger87/filebeat:latest
     ports:
-      - 9002:9002:udp
+      - 9002:9002/udp
     networks:
       - monolith
     links:
