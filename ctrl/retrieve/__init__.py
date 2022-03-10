@@ -5,6 +5,7 @@ from datetime import datetime
 
 class Retrieve:
     def __init__(self, appconfig):
+
         self.elastic_host = appconfig.ELASTIC_HOST
         self.elastic_port = appconfig.ELASTIC_PORT
         self.endpoint_index = appconfig.ENDPOINT_INDEX
@@ -16,6 +17,7 @@ class Retrieve:
         self.redis_host = appconfig.REDIS_HOST
         self.redis_port = appconfig.REDIS_PORT
         self.nmap_enabled = appconfig.NMAP_ENABLED
+
     def endpoint_info_query(self, query):
 
         index = ElasticIndex(self.endpoint_index, host=self.elastic_host, port=self.elastic_port)
@@ -102,6 +104,10 @@ class Retrieve:
     def endpoint_info(self,hostname):
 
         index = ElasticIndex(self.endpoint_index, host=self.elastic_host, port=self.elastic_port)
+
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         elastic_hits = index.lquery(hostname, field="hostname")
 
         if elastic_hits['hits']['total']['value'] == 0:
@@ -122,6 +128,9 @@ class Retrieve:
 
         index = ElasticIndex(self.nmap_index, host=self.elastic_host, port=self.elastic_port)
 
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         try:
             elastic_hits = index.query(endpoint_id, field="endpoint_id", sort_field="@timestamp", sort_order="desc")
         except:
@@ -139,6 +148,9 @@ class Retrieve:
 
         index = ElasticIndex("ep_details", host=self.elastic_host, port=self.elastic_port)
 
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         try:
             elastic_hits = index.query(endpoint_id, field="endpoint_id")
         except:
@@ -155,6 +167,10 @@ class Retrieve:
 
     def interface_info(self, hostname):
         index = ElasticIndex(self.interface_index, host=self.elastic_host, port=self.elastic_port)
+
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         elastic_hits = index.query(hostname, field="hostname")
 
         if elastic_hits['hits']['total']['value'] == 0:
@@ -179,6 +195,10 @@ class Retrieve:
 
     def vlan_info(self, hostname):
         index = ElasticIndex(self.vlan_index, host=self.elastic_host, port=self.elastic_port)
+
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         elastic_hits = index.query(hostname, field="hostname")
 
         if elastic_hits['hits']['total']['value'] == 0:
@@ -199,6 +219,10 @@ class Retrieve:
 
     def gateway_info(self, hostname):
         index = ElasticIndex(self.gateway_index, host=self.elastic_host, port=self.elastic_port)
+
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         elastic_hits = index.query(hostname, field="hostname")
 
         if elastic_hits['hits']['total']['value'] == 0:
@@ -219,6 +243,10 @@ class Retrieve:
 
     def zone_info(self, hostname):
         index = ElasticIndex(self.zone_index, host=self.elastic_host, port=self.elastic_port)
+
+        if not index.es.indices.exists(index=index.index):
+            return None
+
         elastic_hits = index.query(hostname, field="hostname")
 
         if elastic_hits['hits']['total']['value'] == 0:
@@ -239,6 +267,7 @@ class Retrieve:
     def jobs_all(self, queue_name):
 
         redis_connection = Redis(host=self.redis_host, port=self.redis_port, db=0)
+
         queue = Queue(connection=redis_connection, name=queue_name)
 
         regs = [queue.started_job_registry,
