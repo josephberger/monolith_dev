@@ -17,16 +17,15 @@ docker - https://docs.docker.com/engine/install/ubuntu/
 
 docker-compose - https://docs.docker.com/compose/install/
 
-python - make sure you are using python3.8 (it may work on older version but why??)
+python - make sure you are using python3.8 (it may work on older versions but why??)
 
-## Docker-Comose
+## Setting up Docker-Compose
 
 Use the components in the docker-compose folder to deploy the elastic components and redis
 
 ```bash
 cd docker-compose
 docker-compose up -d
-
 ```
 
 ## Setting up python
@@ -66,13 +65,14 @@ for ip in ipaddress.IPv4Network("172.31.10.0/24"):
                                    args=(str(ip),),
                                    description=f'Sweep {str(ip)}')
 ```
-
+```bash
+python3 test_run.py
+```
 ## Run the high and default workers
 
 These workers do not run in the background so start them in a separate terminal or run them as a service
 ```bash
 python3 high_worker.py
-
 python3 default_worker.py
 ```
 
@@ -86,6 +86,13 @@ python3 run.py
  * Running on http://172.31.10.27:5000/ (Press CTRL+C to quit)
  * Restarting with stat
 ```
+##Ports to send syslog to:
 
+- 9001/udp - cisco-asa
+- 9002/udp - cisco-ios (includes xr)
+- 9506/udp - cisco-nxos
+- 9100/udp - panos (traffic, threat, userid, hip, globalprotect, system)
+- 5044/tcp - beats
+- 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -5,7 +5,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.17.0
     volumes:
-       - esdata:/usr/share/elasticsearch/data
+       - ./esdata:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -49,9 +49,12 @@ services:
       - monolith
 
   filebeat:
-    image: jberger87/filebeat:latest
+    image: jberger87/filebeat-logging:1
     ports:
       - 9002:9002/udp
+      - 9001:9001/udp
+      - 9506:9506/udp
+      - 9100:9100/udp
     networks:
       - monolith
     links:

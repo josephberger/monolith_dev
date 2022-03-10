@@ -1,2 +1,2 @@
-- pipeline.id: syslog
-  path.config: "/usr/share/logstash/pipelines/syslog.conf"
+- pipeline.id: filebeat
+  path.config: "/usr/share/logstash/pipelines/filebeat.conf"
