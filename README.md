@@ -40,10 +40,10 @@ source venv/bin/activate
 
 ## Create the .credentials.yaml file in the root folder
 
-This is an alpha way of providing credentials for the initial netmiko discovery and will be changed in the future.  The id must be an integer and cannot be zero.
+This is an alpha way of providing credentials for the initial netmiko discovery and will be changed in the future.  The id must be an integer and cannot be zero.  in the root of the project (monolith_dev) create the .credentials.yaml file.
 ```bash
-touch credentials.yaml
-nano credentials.yaml
+touch .credentials.yaml
+nano .credentials.yaml
 
 - id: 1
   username: python
